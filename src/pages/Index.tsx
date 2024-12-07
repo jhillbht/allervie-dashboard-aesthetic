@@ -63,9 +63,17 @@ const Index = () => {
           <h2 className="text-lg font-medium mb-6">Performance Over Time</h2>
           <div className="h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={data}>
+              <LineChart
+                data={data}
+                margin={{ top: 20, right: 30, left: 20, bottom: 60 }} // Increased bottom margin
+              >
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                <XAxis dataKey="name" stroke="#6B7280" />
+                <XAxis
+                  dataKey="name"
+                  stroke="#6B7280"
+                  axisLine={{ strokeWidth: 1 }}
+                  tick={{ dy: 30 }} // Move time stamps down
+                />
                 <YAxis stroke="#6B7280" />
                 <Tooltip
                   contentStyle={{
@@ -90,27 +98,39 @@ const Index = () => {
                 />
                 {data.map((entry, index) => 
                   entry.campaign ? (
-                    <ReferenceLine
-                      key={entry.campaign}
-                      x={entry.name}
-                      stroke="#10B981"
-                      strokeDasharray="3 3"
-                      label={{
-                        value: (
-                          <g transform="translate(-10, -20)">
-                            {entry.icon && React.createElement(entry.icon, {
-                              size: 16,
-                              color: '#10B981',
-                              className: "mb-1"
-                            })}
-                            <text x="0" y="20" fill="#10B981" fontSize="12">
-                              {entry.campaign}
-                            </text>
-                          </g>
-                        ) as unknown as string,
-                        position: 'top',
-                      }}
-                    />
+                    <React.Fragment key={entry.campaign}>
+                      <ReferenceLine
+                        x={entry.name}
+                        stroke="#10B981"
+                        strokeDasharray="3 3"
+                      />
+                      {/* Custom label at the bottom */}
+                      <XAxis
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={({ x, y, payload }) => {
+                          if (payload.value === entry.name) {
+                            const Icon = entry.icon;
+                            return (
+                              <g transform={`translate(${x},${y - 10})`}>
+                                {Icon && <Icon size={16} color="#10B981" />}
+                                <text
+                                  x={0}
+                                  y={15}
+                                  textAnchor="middle"
+                                  fill="#10B981"
+                                  fontSize="12"
+                                >
+                                  {entry.campaign}
+                                </text>
+                              </g>
+                            );
+                          }
+                          return null;
+                        }}
+                      />
+                    </React.Fragment>
                   ) : null
                 )}
               </LineChart>
