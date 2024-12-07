@@ -1,3 +1,4 @@
+import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StatsCard } from "@/components/StatsCard";
 import { TrafficSourceCard } from "@/components/TrafficSourceCard";
@@ -106,7 +107,7 @@ const Index = () => {
                               {entry.campaign}
                             </text>
                           </g>
-                        ),
+                        ) as unknown as string,
                         position: 'top',
                       }}
                     />
