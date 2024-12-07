@@ -1,14 +1,14 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { StatsCard } from "@/components/StatsCard";
 import { TrafficSourceCard } from "@/components/TrafficSourceCard";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 
 const data = [
   { name: '11 AM', current: 800, previous: 700 },
   { name: '1 PM', current: 600, previous: 500 },
-  { name: '3 PM', current: 1200, previous: 1000 },
+  { name: '3 PM', current: 1200, previous: 1000, campaign: 'Email Campaign 1' },
   { name: '5 PM', current: 800, previous: 700 },
-  { name: '7 PM', current: 1000, previous: 900 },
+  { name: '7 PM', current: 1000, previous: 900, campaign: 'Ad Campaign 4' },
   { name: '9 PM', current: 500, previous: 400 },
 ];
 
@@ -86,6 +86,22 @@ const Index = () => {
                   strokeWidth={2}
                   dot={false}
                 />
+                {data.map((entry, index) => 
+                  entry.campaign ? (
+                    <ReferenceLine
+                      key={entry.campaign}
+                      x={entry.name}
+                      stroke="#10B981"
+                      strokeDasharray="3 3"
+                      label={{
+                        value: entry.campaign,
+                        fill: '#10B981',
+                        fontSize: 12,
+                        position: 'top',
+                      }}
+                    />
+                  ) : null
+                )}
               </LineChart>
             </ResponsiveContainer>
           </div>
