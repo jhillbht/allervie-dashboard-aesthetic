@@ -2,13 +2,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { StatsCard } from "@/components/StatsCard";
 import { TrafficSourceCard } from "@/components/TrafficSourceCard";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import { Mail, Facebook } from "lucide-react";
 
 const data = [
   { name: '11 AM', current: 800, previous: 700 },
   { name: '1 PM', current: 600, previous: 500 },
-  { name: '3 PM', current: 1200, previous: 1000, campaign: 'Email Campaign 1' },
+  { name: '3 PM', current: 1200, previous: 1000, campaign: 'Email Campaign 1', icon: Mail },
   { name: '5 PM', current: 800, previous: 700 },
-  { name: '7 PM', current: 1000, previous: 900, campaign: 'Ad Campaign 4' },
+  { name: '7 PM', current: 1000, previous: 900, campaign: 'Ad Campaign 4', icon: Facebook },
   { name: '9 PM', current: 500, previous: 400 },
 ];
 
@@ -94,9 +95,18 @@ const Index = () => {
                       stroke="#10B981"
                       strokeDasharray="3 3"
                       label={{
-                        value: entry.campaign,
-                        fill: '#10B981',
-                        fontSize: 12,
+                        value: (
+                          <g transform="translate(-10, -20)">
+                            {entry.icon && React.createElement(entry.icon, {
+                              size: 16,
+                              color: '#10B981',
+                              className: "mb-1"
+                            })}
+                            <text x="0" y="20" fill="#10B981" fontSize="12">
+                              {entry.campaign}
+                            </text>
+                          </g>
+                        ),
                         position: 'top',
                       }}
                     />
