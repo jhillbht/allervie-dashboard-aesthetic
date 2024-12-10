@@ -111,7 +111,7 @@ export function CustomerFunnels() {
                 <span className="text-sm text-muted-foreground">
                   Revenue
                 </span>
-                <span className={`font-medium ${funnel.revenue === maxRevenue ? 'text-lime-500' : ''}`}>
+                <span className={`font-medium ${funnel.revenue === maxRevenue ? 'text-green-500' : ''}`}>
                   ${funnel.revenue.toLocaleString()}
                 </span>
               </div>
