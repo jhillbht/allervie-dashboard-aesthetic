@@ -38,7 +38,13 @@ export default function Index() {
       <div className="max-w-full mx-auto space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold">Analytics Dashboard</h1>
+          <div className="flex items-center gap-3">
+            <img 
+              src="/lovable-uploads/68a322a1-90ab-42ca-845d-5b3c286726ce.png" 
+              alt="Launch Analytics" 
+              className="h-8"
+            />
+          </div>
           <div className="flex items-center gap-4">
             <Select value={timePeriod} onValueChange={handlePeriodChange}>
               <SelectTrigger className="w-[180px]">
