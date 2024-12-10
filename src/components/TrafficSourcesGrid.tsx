@@ -1,5 +1,6 @@
 import React from 'react';
 import { TrafficSourceCard } from "@/components/TrafficSourceCard";
+import { Crown } from "lucide-react";
 
 export function TrafficSourcesGrid() {
   const sources = [
@@ -51,7 +52,10 @@ export function TrafficSourcesGrid() {
 
   return (
     <div>
-      <h2 className="text-lg font-medium mb-6">Traffic Sources</h2>
+      <div className="flex items-center gap-2 mb-6">
+        <h2 className="text-lg font-medium">Traffic Sources</h2>
+        <Crown className="h-5 w-5 text-yellow-500" />
+      </div>
       <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {sources.map((source) => (
           <TrafficSourceCard
