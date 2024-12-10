@@ -86,22 +86,24 @@ function Index() {
                 margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                {/* XAxis with reduced font size (25% smaller) */}
                 <XAxis
                   dataKey="name"
                   stroke="#6B7280"
                   axisLine={{ strokeWidth: 1 }}
-                  tick={{ dy: 10, fontSize: 9 }} {/* Reduced font size by 25% from 12 to 9 */}
+                  tick={{ dy: 10, fontSize: 9 }}
                 />
+                {/* YAxis with reduced font size (25% smaller) */}
                 <YAxis 
                   stroke="#6B7280"
-                  tick={{ fontSize: 9 }} {/* Reduced font size by 25% from 12 to 9 */}
+                  tick={{ fontSize: 9 }}
                 />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "#1F2937",
                     border: "none",
                     borderRadius: "8px",
-                    fontSize: "9px", /* Reduced font size by 25% from 12 to 9 */
+                    fontSize: "9px"
                   }}
                 />
                 <Line
@@ -129,7 +131,7 @@ function Index() {
                           position: 'bottom',
                           value: entry.campaign,
                           fill: '#10B981',
-                          fontSize: 9, /* Reduced font size by 25% from 12 to 9 */
+                          fontSize: 9,
                           dy: 40
                         }}
                       />
