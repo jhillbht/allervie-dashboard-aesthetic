@@ -17,7 +17,7 @@ const data = [
 function Index() {
   return (
     <div className="min-h-screen bg-background p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-full mx-auto space-y-8">
         {/* Header */}
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold">Analytics Dashboard</h1>
@@ -76,10 +76,10 @@ function Index() {
           />
         </div>
 
-        {/* Chart */}
-        <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6">
+        {/* Chart - Updated with full width and smaller font */}
+        <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
           <h2 className="text-lg font-medium mb-6">Performance Over Time</h2>
-          <div className="h-[400px]">
+          <div className="h-[400px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart
                 data={data}
@@ -90,14 +90,18 @@ function Index() {
                   dataKey="name"
                   stroke="#6B7280"
                   axisLine={{ strokeWidth: 1 }}
-                  tick={{ dy: 10 }}
+                  tick={{ dy: 10, fontSize: 9 }} {/* Reduced font size by 25% from 12 to 9 */}
                 />
-                <YAxis stroke="#6B7280" />
+                <YAxis 
+                  stroke="#6B7280"
+                  tick={{ fontSize: 9 }} {/* Reduced font size by 25% from 12 to 9 */}
+                />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: "#1F2937",
                     border: "none",
                     borderRadius: "8px",
+                    fontSize: "9px", /* Reduced font size by 25% from 12 to 9 */
                   }}
                 />
                 <Line
@@ -125,7 +129,7 @@ function Index() {
                           position: 'bottom',
                           value: entry.campaign,
                           fill: '#10B981',
-                          fontSize: 12,
+                          fontSize: 9, /* Reduced font size by 25% from 12 to 9 */
                           dy: 40
                         }}
                       />
