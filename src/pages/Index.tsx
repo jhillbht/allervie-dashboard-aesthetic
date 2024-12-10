@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/StatsCard";
-import { Mail, Facebook, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { PerformanceChart } from "@/components/PerformanceChart";
 import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
 
@@ -13,9 +13,9 @@ const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (
 const generateDemoData = () => [
   { name: '11 AM', current: randomInRange(500, 1000), previous: randomInRange(400, 900) },
   { name: '1 PM', current: randomInRange(500, 1000), previous: randomInRange(400, 900) },
-  { name: '3 PM', current: randomInRange(1000, 1500), previous: randomInRange(800, 1200), campaign: 'Email Campaign 1', icon: Mail },
+  { name: '3 PM', current: randomInRange(1000, 1500), previous: randomInRange(800, 1200), campaign: 'Email Campaign 1' },
   { name: '5 PM', current: randomInRange(600, 1000), previous: randomInRange(500, 900) },
-  { name: '7 PM', current: randomInRange(800, 1200), previous: randomInRange(700, 1100), campaign: 'Ad Campaign 4', icon: Facebook },
+  { name: '7 PM', current: randomInRange(800, 1200), previous: randomInRange(700, 1100), campaign: 'Ad Campaign 4' },
   { name: '9 PM', current: randomInRange(400, 800), previous: randomInRange(300, 700) },
 ];
 
