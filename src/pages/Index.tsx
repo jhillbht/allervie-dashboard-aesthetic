@@ -90,7 +90,7 @@ function Index() {
                   dataKey="name"
                   stroke="#6B7280"
                   axisLine={{ strokeWidth: 1 }}
-                  tick={{ dy: 30 }}
+                  tick={{ dy: 10 }}
                 />
                 <YAxis stroke="#6B7280" />
                 <Tooltip
@@ -121,38 +121,17 @@ function Index() {
                         x={entry.name}
                         stroke="#10B981"
                         strokeDasharray="3 3"
+                        label={{
+                          position: 'bottom',
+                          value: entry.campaign,
+                          fill: '#10B981',
+                          fontSize: 12,
+                          dy: 40
+                        }}
                       />
                     </React.Fragment>
                   ) : null
                 )}
-                {/* Separate XAxis for campaign labels */}
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  height={50}
-                  tick={({ x, y, payload }) => {
-                    const entry = data.find(d => d.name === payload.value);
-                    if (entry?.campaign) {
-                      const Icon = entry.icon;
-                      return (
-                        <g transform={`translate(${x},${y + 10})`}>
-                          {Icon && <Icon size={16} color="#10B981" />}
-                          <text
-                            x={0}
-                            y={25}
-                            textAnchor="middle"
-                            fill="#10B981"
-                            fontSize="12"
-                          >
-                            {entry.campaign}
-                          </text>
-                        </g>
-                      );
-                    }
-                    return null;
-                  }}
-                />
               </LineChart>
             </ResponsiveContainer>
           </div>
