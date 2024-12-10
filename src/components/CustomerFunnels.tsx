@@ -61,6 +61,8 @@ const funnelData: FunnelData[] = [
 ];
 
 export function CustomerFunnels() {
+  const maxRevenue = Math.max(...funnelData.map(funnel => funnel.revenue));
+
   return (
     <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
       <h2 className="text-lg font-medium mb-6">Customer Journey Funnels</h2>
@@ -109,7 +111,7 @@ export function CustomerFunnels() {
                 <span className="text-sm text-muted-foreground">
                   Revenue
                 </span>
-                <span className="font-medium">
+                <span className={`font-medium ${funnel.revenue === maxRevenue ? 'text-lime-500' : ''}`}>
                   ${funnel.revenue.toLocaleString()}
                 </span>
               </div>
