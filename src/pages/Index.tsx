@@ -2,9 +2,9 @@ import React, { useState, useCallback } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/StatsCard";
-import { TrafficSourceCard } from "@/components/TrafficSourceCard";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Mail, Facebook, RefreshCw } from "lucide-react";
+import { PerformanceChart } from "@/components/PerformanceChart";
+import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
 
 // Function to generate random number within a range
 const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -19,7 +19,7 @@ const generateDemoData = () => [
   { name: '9 PM', current: randomInRange(400, 800), previous: randomInRange(300, 700) },
 ];
 
-function Index() {
+export default function Index() {
   const [timePeriod, setTimePeriod] = useState('today');
   const [data, setData] = useState(generateDemoData());
 
@@ -61,7 +61,7 @@ function Index() {
           </div>
         </div>
 
-        {/* Stats Grid - Updated to show 2 columns on mobile */}
+        {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           <StatsCard
             title="Conversion Rate"
@@ -101,103 +101,12 @@ function Index() {
           />
         </div>
 
-        {/* Chart - Updated with full width and smaller font */}
-        <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
-          <h2 className="text-lg font-medium mb-6">Performance Over Time</h2>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart
-                data={data}
-                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                {/* XAxis with reduced font size (25% smaller) */}
-                <XAxis
-                  dataKey="name"
-                  stroke="#6B7280"
-                  axisLine={{ strokeWidth: 1 }}
-                  tick={{ dy: 10, fontSize: 9 }}
-                />
-                {/* YAxis with reduced font size (25% smaller) */}
-                <YAxis 
-                  stroke="#6B7280"
-                  tick={{ fontSize: 9 }}
-                />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "#1F2937",
-                    border: "none",
-                    borderRadius: "8px",
-                    fontSize: "9px"
-                  }}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="current"
-                  stroke="#3B82F6"
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line
-                  type="monotone"
-                  dataKey="previous"
-                  stroke="#6B7280"
-                  strokeWidth={2}
-                  dot={false}
-                />
-                {data.map((entry) => 
-                  entry.campaign ? (
-                    <React.Fragment key={entry.campaign}>
-                      <ReferenceLine
-                        x={entry.name}
-                        stroke="#10B981"
-                        strokeDasharray="3 3"
-                        label={{
-                          position: 'bottom',
-                          value: entry.campaign,
-                          fill: '#10B981',
-                          fontSize: 9,
-                          dy: 40
-                        }}
-                      />
-                    </React.Fragment>
-                  ) : null
-                )}
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
+        {/* Performance Chart */}
+        <PerformanceChart data={data} />
 
-        {/* Traffic Sources - Updated to show 2 columns on mobile */}
-        <div>
-          <h2 className="text-lg font-medium mb-6">Traffic Sources</h2>
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            <TrafficSourceCard
-              title="Retargeting"
-              cvr={2.9}
-              revenue={55473}
-              sessions={20307}
-              change={{ value: 2.4, type: "increase" }}
-            />
-            <TrafficSourceCard
-              title="Email"
-              cvr={2.8}
-              revenue={58573}
-              sessions={3494}
-              change={{ value: 4.1, type: "decrease" }}
-            />
-            <TrafficSourceCard
-              title="Organic Search"
-              cvr={1.4}
-              revenue={22560}
-              sessions={4562}
-              change={{ value: 1.6, type: "increase" }}
-            />
-          </div>
-        </div>
+        {/* Traffic Sources */}
+        <TrafficSourcesGrid />
       </div>
     </div>
   );
 }
-
-export default Index;
