@@ -5,6 +5,7 @@ import { StatsCard } from "@/components/StatsCard";
 import { RefreshCw } from "lucide-react";
 import { PerformanceChart } from "@/components/PerformanceChart";
 import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
+import { LandingPagesTable } from "@/components/LandingPagesTable";
 
 // Function to generate random number within a range
 const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -106,6 +107,9 @@ export default function Index() {
 
         {/* Traffic Sources */}
         <TrafficSourcesGrid />
+
+        {/* Landing Pages Table */}
+        <LandingPagesTable />
       </div>
     </div>
   );
