@@ -1,5 +1,6 @@
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
+import { Crown } from "lucide-react";
 
 interface TrafficSourceCardProps {
   title: string;
@@ -11,6 +12,7 @@ interface TrafficSourceCardProps {
     type: "increase" | "decrease";
   };
   isHighestRevenue?: boolean;
+  isHighestCvr?: boolean;
 }
 
 export function TrafficSourceCard({ 
@@ -19,13 +21,17 @@ export function TrafficSourceCard({
   revenue, 
   sessions, 
   change,
-  isHighestRevenue 
+  isHighestRevenue,
+  isHighestCvr
 }: TrafficSourceCardProps) {
   return (
     <Card className="p-6 bg-card/50 backdrop-blur-sm">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
+          <div className="flex items-center gap-2">
+            <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
+            {isHighestCvr && <Crown className="h-4 w-4 text-yellow-500" />}
+          </div>
           <div className="flex items-baseline gap-2 mt-1">
             <p className="text-2xl font-bold">{cvr}%</p>
             <span className="text-xs text-muted-foreground">CVR</span>

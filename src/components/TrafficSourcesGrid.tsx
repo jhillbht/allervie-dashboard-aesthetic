@@ -49,6 +49,7 @@ export function TrafficSourcesGrid() {
   ];
 
   const maxRevenue = Math.max(...sources.map(source => source.revenue));
+  const maxCvr = Math.max(...sources.map(source => source.cvr));
 
   return (
     <div>
@@ -62,6 +63,7 @@ export function TrafficSourcesGrid() {
             key={source.title}
             {...source}
             isHighestRevenue={source.revenue === maxRevenue}
+            isHighestCvr={source.cvr === maxCvr}
           />
         ))}
       </div>
