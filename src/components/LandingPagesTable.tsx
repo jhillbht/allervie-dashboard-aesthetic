@@ -7,6 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 
 const landingPagesData = [
   {
@@ -44,6 +45,8 @@ const landingPagesData = [
 ];
 
 export function LandingPagesTable() {
+  const maxRevenue = Math.max(...landingPagesData.map(page => page.revenue || 0));
+
   return (
     <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
       <h2 className="text-lg font-medium mb-6">Landing Pages Performance</h2>
@@ -63,7 +66,10 @@ export function LandingPagesTable() {
             {landingPagesData.map((page) => (
               <TableRow key={page.url}>
                 <TableCell className="font-mono text-sm">{page.url}</TableCell>
-                <TableCell className="text-right">
+                <TableCell className={cn(
+                  "text-right",
+                  page.revenue === maxRevenue && "text-green-500"
+                )}>
                   {page.revenue ? `$${page.revenue.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}` : '-'}
                 </TableCell>
                 <TableCell className="text-right">{page.views.toLocaleString()}</TableCell>

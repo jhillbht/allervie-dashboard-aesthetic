@@ -10,9 +10,17 @@ interface TrafficSourceCardProps {
     value: number;
     type: "increase" | "decrease";
   };
+  isHighestRevenue?: boolean;
 }
 
-export function TrafficSourceCard({ title, cvr, revenue, sessions, change }: TrafficSourceCardProps) {
+export function TrafficSourceCard({ 
+  title, 
+  cvr, 
+  revenue, 
+  sessions, 
+  change,
+  isHighestRevenue 
+}: TrafficSourceCardProps) {
   return (
     <Card className="p-6 bg-card/50 backdrop-blur-sm">
       <div className="flex justify-between items-start mb-4">
@@ -36,7 +44,9 @@ export function TrafficSourceCard({ title, cvr, revenue, sessions, change }: Tra
       <div className="grid grid-cols-2 gap-4">
         <div>
           <p className="text-sm text-muted-foreground mb-1">Revenue</p>
-          <p className="font-medium">${revenue.toLocaleString()}</p>
+          <p className={cn("font-medium", isHighestRevenue && "text-green-500")}>
+            ${revenue.toLocaleString()}
+          </p>
         </div>
         <div>
           <p className="text-sm text-muted-foreground mb-1">Sessions</p>
