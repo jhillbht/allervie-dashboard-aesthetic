@@ -37,7 +37,7 @@ function Index() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <StatsCard
             title="Conversion Rate"
             value="1.3%"
@@ -54,6 +54,24 @@ function Index() {
             title="Sessions"
             value="49,062"
             change={{ value: 8.2, type: "increase" }}
+            subtitle="vs Yesterday"
+          />
+          <StatsCard
+            title="Engagement"
+            value="37.5%"
+            change={{ value: 3.1, type: "increase" }}
+            subtitle="vs Yesterday"
+          />
+          <StatsCard
+            title="Bounce Rate"
+            value="33.2%"
+            change={{ value: 1.9, type: "increase" }}
+            subtitle="vs Yesterday"
+          />
+          <StatsCard
+            title="Avg Order"
+            value="$89"
+            change={{ value: 3.8, type: "decrease" }}
             subtitle="vs Yesterday"
           />
         </div>
