@@ -14,7 +14,7 @@ const data = [
   { name: '9 PM', current: 500, previous: 400 },
 ];
 
-const Index = () => {
+function Index() {
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -170,6 +170,6 @@ const Index = () => {
       </div>
     </div>
   );
-};
+}
 
 export default Index;
