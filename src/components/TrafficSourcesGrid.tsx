@@ -24,6 +24,27 @@ export function TrafficSourcesGrid() {
       sessions: 4562,
       change: { value: 1.6, type: "increase" as const },
     },
+    {
+      title: "Organic Social",
+      cvr: 1.8,
+      revenue: 34250,
+      sessions: 15678,
+      change: { value: 3.2, type: "increase" as const },
+    },
+    {
+      title: "Paid Social",
+      cvr: 2.2,
+      revenue: 48920,
+      sessions: 18456,
+      change: { value: 2.8, type: "increase" as const },
+    },
+    {
+      title: "SMS",
+      cvr: 3.1,
+      revenue: 42680,
+      sessions: 8934,
+      change: { value: 5.2, type: "increase" as const },
+    },
   ];
 
   const maxRevenue = Math.max(...sources.map(source => source.revenue));
