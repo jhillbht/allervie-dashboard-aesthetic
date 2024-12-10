@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/StatsCard";
 import { RefreshCw } from "lucide-react";
 import { PerformanceChart } from "@/components/PerformanceChart";
+import { CustomerFunnels } from "@/components/CustomerFunnels";
 import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
 import { LandingPagesTable } from "@/components/LandingPagesTable";
 
@@ -110,6 +111,9 @@ export default function Index() {
 
         {/* Performance Chart */}
         <PerformanceChart data={data} />
+
+        {/* Customer Funnels */}
+        <CustomerFunnels />
 
         {/* Traffic Sources */}
         <TrafficSourcesGrid />
