@@ -12,6 +12,8 @@ interface FunnelData {
   name: string;
   steps: FunnelStep[];
   conversionRate: number;
+  revenue: number;
+  trafficSource: string;
   isWinner?: boolean;
 }
 
@@ -26,6 +28,8 @@ const funnelData: FunnelData[] = [
       { name: "Checkout", value: 250 },
     ],
     conversionRate: 25,
+    revenue: 75000,
+    trafficSource: "Organic Search",
     isWinner: true,
   },
   {
@@ -38,6 +42,8 @@ const funnelData: FunnelData[] = [
       { name: "Checkout", value: 150 },
     ],
     conversionRate: 18.75,
+    revenue: 45000,
+    trafficSource: "Paid Search",
   },
   {
     id: "c",
@@ -49,6 +55,8 @@ const funnelData: FunnelData[] = [
       { name: "Checkout", value: 180 },
     ],
     conversionRate: 15,
+    revenue: 54000,
+    trafficSource: "Email",
   },
 ];
 
@@ -60,7 +68,12 @@ export function CustomerFunnels() {
         {funnelData.map((funnel) => (
           <Card key={funnel.id} className="p-4 relative">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium">{funnel.name}</h3>
+              <div>
+                <h3 className="text-lg font-medium">{funnel.name}</h3>
+                <p className="text-sm text-muted-foreground mt-1">
+                  via {funnel.trafficSource}
+                </p>
+              </div>
               {funnel.isWinner && (
                 <Crown className="h-6 w-6 text-yellow-500" />
               )}
@@ -83,13 +96,21 @@ export function CustomerFunnels() {
                 </div>
               ))}
             </div>
-            <div className="mt-4 pt-4 border-t">
+            <div className="mt-4 pt-4 border-t space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm text-muted-foreground">
                   Conversion Rate
                 </span>
                 <span className="font-medium">
                   {funnel.conversionRate.toFixed(1)}%
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">
+                  Revenue
+                </span>
+                <span className="font-medium">
+                  ${funnel.revenue.toLocaleString()}
                 </span>
               </div>
             </div>
