@@ -1,0 +1,71 @@
+import React from 'react';
+
+interface MarketingFunnelProps {
+  totalMarketingLeads: number;
+  totalSalesLeads: number;
+  totalMarketingRevenue: number;
+  totalSalesRevenue: number;
+  conversionRate: string;
+  revenueConversionRate: string;
+}
+
+export function MarketingFunnel({
+  totalMarketingLeads,
+  totalSalesLeads,
+  totalMarketingRevenue,
+  totalSalesRevenue,
+  conversionRate,
+  revenueConversionRate
+}: MarketingFunnelProps) {
+  return (
+    <div className="relative max-w-2xl mx-auto">
+      <div className="space-y-4">
+        {/* Marketing Stage */}
+        <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-6 rounded-t-xl border border-border/50">
+          <div className="text-center space-y-3">
+            <h3 className="font-medium text-lg">Marketing Qualified Leads</h3>
+            <p className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              {totalMarketingLeads.toLocaleString()}
+            </p>
+            <p className="text-lg text-muted-foreground">
+              Revenue: <span className="font-semibold">${totalMarketingRevenue.toLocaleString()}</span>
+            </p>
+          </div>
+        </div>
+        
+        {/* Conversion Arrow */}
+        <div className="flex justify-center">
+          <div className="text-center bg-gradient-to-br from-secondary/30 to-secondary/20 px-6 py-3 rounded-lg border border-border/50 shadow-lg">
+            <div className="space-y-2">
+              <div>
+                <p className="text-sm text-muted-foreground">Lead Conversion Rate</p>
+                <p className="text-xl font-semibold bg-gradient-to-r from-blue-500 to-blue-600 bg-clip-text text-transparent">
+                  {conversionRate}%
+                </p>
+              </div>
+              <div className="pt-2 border-t border-border/50">
+                <p className="text-sm text-muted-foreground">Revenue Conversion Rate</p>
+                <p className="text-xl font-semibold bg-gradient-to-r from-green-500 to-green-600 bg-clip-text text-transparent">
+                  {revenueConversionRate}%
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Sales Stage */}
+        <div className="bg-gradient-to-br from-primary/10 to-primary/20 p-6 rounded-b-xl border border-border/50">
+          <div className="text-center space-y-3">
+            <h3 className="font-medium text-lg">Sales Qualified Leads</h3>
+            <p className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              {totalSalesLeads.toLocaleString()}
+            </p>
+            <p className="text-lg text-muted-foreground">
+              Revenue: <span className="font-semibold">${totalSalesRevenue.toLocaleString()}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

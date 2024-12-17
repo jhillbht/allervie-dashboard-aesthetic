@@ -1,12 +1,8 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Crown } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { MarketingChannelCard } from './MarketingChannelCard';
+import { MarketingFunnel } from './MarketingFunnel';
 
 interface MarketingMetrics {
   name: string;
@@ -68,114 +64,42 @@ export function MarketingSalesAnalysis() {
 
   return (
     <div className="space-y-8">
-      <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
+      {/* Marketing Channel Performance */}
+      <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
         <h2 className="text-lg font-medium mb-6">Marketing Channel Performance</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {marketingData.map((channel) => (
-            <Card key={channel.name} className="p-4 relative">
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h3 className="text-lg font-medium">{channel.name}</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    via {channel.trafficSource}
-                  </p>
-                </div>
-                {(channel.revenue === maxMarketingRevenue || channel.leads === maxMarketingLeads) && (
-                  <div className="flex gap-1">
-                    {channel.revenue === maxMarketingRevenue && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Crown className="h-6 w-6 text-yellow-500" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Highest Revenue</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
-                    {channel.leads === maxMarketingLeads && (
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger>
-                            <Crown className="h-6 w-6 text-blue-500" />
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Most Leads</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Revenue</span>
-                    <span className={`font-medium ${channel.revenue === maxMarketingRevenue ? 'text-green-500' : ''}`}>
-                      ${channel.revenue.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-muted-foreground">Generated Leads</span>
-                    <span className={`font-medium ${channel.leads === maxMarketingLeads ? 'text-blue-500' : ''}`}>
-                      {channel.leads.toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </Card>
+            <MarketingChannelCard
+              key={channel.name}
+              {...channel}
+              isHighestRevenue={channel.revenue === maxMarketingRevenue}
+              isHighestLeads={channel.leads === maxMarketingLeads}
+              maxRevenue={maxMarketingRevenue}
+              maxLeads={maxMarketingLeads}
+            />
           ))}
         </div>
       </div>
 
-      {/* Funnel Visualization */}
-      <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
+      {/* Marketing to Sales Funnel */}
+      <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
         <h2 className="text-lg font-medium mb-6">Marketing to Sales Funnel</h2>
-        <div className="relative max-w-2xl mx-auto">
-          <div className="space-y-4">
-            {/* Marketing Stage */}
-            <div className="bg-primary/10 p-4 rounded-t-lg">
-              <div className="text-center space-y-2">
-                <h3 className="font-medium">Marketing Qualified Leads</h3>
-                <p className="text-2xl font-bold">{totalMarketingLeads.toLocaleString()}</p>
-                <p className="text-lg text-muted-foreground">
-                  Revenue: ${totalMarketingRevenue.toLocaleString()}
-                </p>
-              </div>
-            </div>
-            {/* Conversion Arrow */}
-            <div className="flex justify-center">
-              <div className="text-center bg-secondary/20 px-4 py-2 rounded space-y-1">
-                <p className="text-sm text-muted-foreground">Lead Conversion Rate</p>
-                <p className="font-medium">{conversionRate}%</p>
-                <p className="text-sm text-muted-foreground">Revenue Conversion Rate</p>
-                <p className="font-medium">{revenueConversionRate}%</p>
-              </div>
-            </div>
-            {/* Sales Stage */}
-            <div className="bg-primary/20 p-4 rounded-b-lg">
-              <div className="text-center space-y-2">
-                <h3 className="font-medium">Sales Qualified Leads</h3>
-                <p className="text-2xl font-bold">{totalSalesLeads.toLocaleString()}</p>
-                <p className="text-lg text-muted-foreground">
-                  Revenue: ${totalSalesRevenue.toLocaleString()}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <MarketingFunnel
+          totalMarketingLeads={totalMarketingLeads}
+          totalSalesLeads={totalSalesLeads}
+          totalMarketingRevenue={totalMarketingRevenue}
+          totalSalesRevenue={totalSalesRevenue}
+          conversionRate={conversionRate}
+          revenueConversionRate={revenueConversionRate}
+        />
       </div>
 
       {/* Sales Performance */}
-      <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
+      <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
         <h2 className="text-lg font-medium mb-6">Sales Performance</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {salesData.map((data) => (
-            <Card key={data.title} className="p-6">
+            <Card key={data.title} className="p-6 bg-card/50 backdrop-blur-sm border border-border/50 hover:bg-card/60 transition-colors">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="text-sm font-medium text-muted-foreground">{data.title}</h3>
                 {data.revenue === maxSalesRevenue && <Crown className="h-4 w-4 text-yellow-500" />}
