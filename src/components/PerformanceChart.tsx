@@ -42,13 +42,12 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
               stroke="#10B981"
               strokeDasharray="3 3"
               label={{
-                position: 'center',
+                position: 'insideBottom',
                 value: entry.campaign,
                 fill: '#10B981',
                 fontSize: isLandscape ? 12 : 10,
                 angle: 90,
-                offset: isLandscape ? 40 : 30,
-                dy: 0
+                offset: 10
               }}
             />
           </React.Fragment>
@@ -56,29 +55,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
       );
     }
 
-    return (
-      <XAxis
-        dataKey="name"
-        stroke="#6B7280"
-        axisLine={{ strokeWidth: 1 }}
-        tick={{ 
-          dy: 20, 
-          fontSize: isLandscape ? 14 : 12,
-          fill: "#6B7280"
-        }}
-        interval={0}
-        height={100}
-        tickMargin={10}
-        tickFormatter={(value, index) => {
-          const entry = data[index];
-          return `${value}${entry.campaign ? `\n${entry.campaign}` : ''}`;
-        }}
-        label={{
-          value: '',
-          position: 'bottom'
-        }}
-      />
-    );
+    return null;
   };
 
   return (
@@ -92,7 +69,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
               top: 20, 
               right: isLandscape ? 50 : 40, 
               left: isLandscape ? 60 : 50, 
-              bottom: isMobile ? 80 : 100 
+              bottom: isMobile ? 40 : 60 
             }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -107,11 +84,21 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                   fill: "#6B7280"
                 }}
                 interval={0}
-                height={100}
+                height={60}
                 tickMargin={10}
-                tickFormatter={(value, index) => {
-                  const entry = data[index];
-                  return `${value}${entry.campaign ? `\n${entry.campaign}` : ''}`;
+                label={(props) => {
+                  const entry = data[props.index];
+                  return entry?.campaign ? (
+                    <text
+                      x={props.x}
+                      y={props.y + 30}
+                      fill="#6B7280"
+                      textAnchor="middle"
+                      fontSize={12}
+                    >
+                      {entry.campaign}
+                    </text>
+                  ) : null;
                 }}
               />
             )}
@@ -126,7 +113,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                   fill: "#6B7280"
                 }}
                 interval={0}
-                height={60}
+                height={40}
                 tickMargin={10}
               />
             )}
