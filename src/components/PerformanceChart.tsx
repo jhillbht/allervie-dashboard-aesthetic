@@ -1,6 +1,7 @@
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { Mail, Facebook } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ChartDataPoint {
   name: string;
@@ -16,6 +17,7 @@ interface PerformanceChartProps {
 
 export function PerformanceChart({ data }: PerformanceChartProps) {
   const [isLandscape, setIsLandscape] = React.useState(false);
+  const isMobile = useIsMobile();
 
   React.useEffect(() => {
     const handleOrientationChange = () => {
@@ -102,8 +104,9 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                       value: entry.campaign,
                       fill: '#10B981',
                       fontSize: isLandscape ? 12 : 10,
-                      angle: 90,
-                      offset: isLandscape ? 40 : 30
+                      angle: isMobile ? 90 : 0,
+                      offset: isMobile ? (isLandscape ? 40 : 30) : 60,
+                      dy: isMobile ? 0 : 60
                     }}
                   />
                 </React.Fragment>
