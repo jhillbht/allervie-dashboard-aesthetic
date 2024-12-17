@@ -32,6 +32,55 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
     return () => window.removeEventListener('orientationchange', handleOrientationChange);
   }, []);
 
+  const renderCampaignLabels = () => {
+    if (isMobile) {
+      return data.map((entry) => 
+        entry.campaign ? (
+          <React.Fragment key={entry.campaign}>
+            <ReferenceLine
+              x={entry.name}
+              stroke="#10B981"
+              strokeDasharray="3 3"
+              label={{
+                position: 'center',
+                value: entry.campaign,
+                fill: '#10B981',
+                fontSize: isLandscape ? 12 : 10,
+                angle: 90,
+                offset: isLandscape ? 40 : 30,
+                dy: 0
+              }}
+            />
+          </React.Fragment>
+        ) : null
+      );
+    }
+
+    return (
+      <XAxis
+        dataKey="name"
+        stroke="#6B7280"
+        axisLine={{ strokeWidth: 1 }}
+        tick={{ 
+          dy: 20, 
+          fontSize: isLandscape ? 14 : 12,
+          fill: "#6B7280"
+        }}
+        interval={0}
+        height={100}
+        tickMargin={10}
+        tickFormatter={(value, index) => {
+          const entry = data[index];
+          return `${value}${entry.campaign ? `\n${entry.campaign}` : ''}`;
+        }}
+        label={{
+          value: '',
+          position: 'bottom'
+        }}
+      />
+    );
+  };
+
   return (
     <div className={`bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full ${isLandscape ? 'fixed inset-0 z-50' : ''}`}>
       <h2 className="text-lg font-medium mb-6">Performance Over Time</h2>
@@ -43,23 +92,44 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
               top: 20, 
               right: isLandscape ? 50 : 40, 
               left: isLandscape ? 60 : 50, 
-              bottom: isLandscape ? 100 : 80 
+              bottom: isMobile ? 80 : 100 
             }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            <XAxis
-              dataKey="name"
-              stroke="#6B7280"
-              axisLine={{ strokeWidth: 1 }}
-              tick={{ 
-                dy: 20, 
-                fontSize: isLandscape ? 14 : 12,
-                fill: "#6B7280"
-              }}
-              interval={0}
-              height={60}
-              tickMargin={10}
-            />
+            {!isMobile && (
+              <XAxis
+                dataKey="name"
+                stroke="#6B7280"
+                axisLine={{ strokeWidth: 1 }}
+                tick={{ 
+                  dy: 20, 
+                  fontSize: isLandscape ? 14 : 12,
+                  fill: "#6B7280"
+                }}
+                interval={0}
+                height={100}
+                tickMargin={10}
+                tickFormatter={(value, index) => {
+                  const entry = data[index];
+                  return `${value}${entry.campaign ? `\n${entry.campaign}` : ''}`;
+                }}
+              />
+            )}
+            {isMobile && (
+              <XAxis
+                dataKey="name"
+                stroke="#6B7280"
+                axisLine={{ strokeWidth: 1 }}
+                tick={{ 
+                  dy: 20, 
+                  fontSize: isLandscape ? 14 : 12,
+                  fill: "#6B7280"
+                }}
+                interval={0}
+                height={60}
+                tickMargin={10}
+              />
+            )}
             <YAxis 
               stroke="#6B7280"
               tick={{ 
@@ -92,26 +162,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
               strokeWidth={2}
               dot={false}
             />
-            {data.map((entry) => 
-              entry.campaign ? (
-                <React.Fragment key={entry.campaign}>
-                  <ReferenceLine
-                    x={entry.name}
-                    stroke="#10B981"
-                    strokeDasharray="3 3"
-                    label={{
-                      position: 'center',
-                      value: entry.campaign,
-                      fill: '#10B981',
-                      fontSize: isLandscape ? 12 : 10,
-                      angle: isMobile ? 90 : 0,
-                      offset: isMobile ? (isLandscape ? 40 : 30) : 20,
-                      dy: isMobile ? 0 : -20
-                    }}
-                  />
-                </React.Fragment>
-              ) : null
-            )}
+            {renderCampaignLabels()}
           </LineChart>
         </ResponsiveContainer>
       </div>
