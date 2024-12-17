@@ -30,7 +30,7 @@ export function TrafficSourceCard({
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-sm font-medium text-muted-foreground">{title}</h3>
-            {isHighestCvr && <Crown className="h-4 w-4 text-yellow-500" />}
+            {isHighestRevenue && <Crown className="h-4 w-4 text-yellow-500" />}
           </div>
           <div className="flex items-baseline gap-2 mt-1">
             <p className="text-2xl font-bold">{cvr}%</p>
