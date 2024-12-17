@@ -85,13 +85,6 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
           </LineChart>
         </ResponsiveContainer>
       </div>
-      {!isMobile && (
-        <CampaignLabels
-          data={data}
-          isMobile={isMobile}
-          isLandscape={isLandscape}
-        />
-      )}
     </div>
   );
 }
