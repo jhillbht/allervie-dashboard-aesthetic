@@ -98,11 +98,12 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                     stroke="#10B981"
                     strokeDasharray="3 3"
                     label={{
-                      position: 'bottom',
+                      position: 'center',
                       value: entry.campaign,
                       fill: '#10B981',
                       fontSize: isLandscape ? 12 : 10,
-                      dy: 60
+                      angle: 90,
+                      offset: isLandscape ? 40 : 30
                     }}
                   />
                 </React.Fragment>
