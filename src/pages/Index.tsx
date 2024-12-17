@@ -114,14 +114,17 @@ export default function Index() {
         {/* Performance Chart */}
         <PerformanceChart data={data} />
 
-        {/* Marketing Comparison */}
-        <MarketingComparison />
+        {/* Marketing and Sales Analysis Cluster */}
+        <div className="space-y-8">
+          {/* Marketing Comparison */}
+          <MarketingComparison />
+
+          {/* Sales Comparison */}
+          <SalesComparison />
+        </div>
 
         {/* Customer Funnels */}
         <CustomerFunnels />
-
-        {/* Sales Comparison */}
-        <SalesComparison />
 
         {/* Traffic Sources */}
         <TrafficSourcesGrid />
