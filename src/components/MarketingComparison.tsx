@@ -1,6 +1,12 @@
 import React from 'react';
 import { Card } from "@/components/ui/card";
 import { Crown } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface MarketingMetrics {
   name: string;
@@ -50,10 +56,28 @@ export function MarketingComparison() {
               {(channel.revenue === maxRevenue || channel.leads === maxLeads) && (
                 <div className="flex gap-1">
                   {channel.revenue === maxRevenue && (
-                    <Crown className="h-6 w-6 text-yellow-500" title="Highest Revenue" />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Crown className="h-6 w-6 text-yellow-500" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Highest Revenue</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                   {channel.leads === maxLeads && (
-                    <Crown className="h-6 w-6 text-blue-500" title="Most Leads" />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          <Crown className="h-6 w-6 text-blue-500" />
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Most Leads</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   )}
                 </div>
               )}
