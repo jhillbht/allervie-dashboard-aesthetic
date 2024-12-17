@@ -105,8 +105,8 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                       fill: '#10B981',
                       fontSize: isLandscape ? 12 : 10,
                       angle: isMobile ? 90 : 0,
-                      offset: isMobile ? (isLandscape ? 40 : 30) : 60,
-                      dy: isMobile ? 0 : 60
+                      offset: isMobile ? (isLandscape ? 40 : 30) : 20,
+                      dy: isMobile ? 0 : -20
                     }}
                   />
                 </React.Fragment>
