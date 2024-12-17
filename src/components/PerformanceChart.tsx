@@ -39,9 +39,9 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
             data={data}
             margin={{ 
               top: 20, 
-              right: isLandscape ? 40 : 30, 
-              left: isLandscape ? 30 : 20, 
-              bottom: 60 
+              right: isLandscape ? 50 : 40, 
+              left: isLandscape ? 60 : 50, 
+              bottom: isLandscape ? 100 : 80 
             }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -49,18 +49,31 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
               dataKey="name"
               stroke="#6B7280"
               axisLine={{ strokeWidth: 1 }}
-              tick={{ dy: 10, fontSize: isLandscape ? 12 : 9 }}
+              tick={{ 
+                dy: 20, 
+                fontSize: isLandscape ? 14 : 12,
+                fill: "#6B7280"
+              }}
+              interval={0}
+              height={60}
+              tickMargin={10}
             />
             <YAxis 
               stroke="#6B7280"
-              tick={{ fontSize: isLandscape ? 12 : 9 }}
+              tick={{ 
+                fontSize: isLandscape ? 14 : 12,
+                fill: "#6B7280"
+              }}
+              width={isLandscape ? 60 : 50}
+              tickMargin={8}
             />
             <Tooltip
               contentStyle={{
                 backgroundColor: "#1F2937",
                 border: "none",
                 borderRadius: "8px",
-                fontSize: isLandscape ? "12px" : "9px"
+                fontSize: isLandscape ? "14px" : "12px",
+                padding: "8px 12px"
               }}
             />
             <Line
@@ -88,8 +101,8 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                       position: 'bottom',
                       value: entry.campaign,
                       fill: '#10B981',
-                      fontSize: isLandscape ? 12 : 9,
-                      dy: 40
+                      fontSize: isLandscape ? 12 : 10,
+                      dy: 60
                     }}
                   />
                 </React.Fragment>
