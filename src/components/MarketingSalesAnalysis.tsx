@@ -61,7 +61,10 @@ export function MarketingSalesAnalysis() {
   const maxSalesRevenue = Math.max(...salesData.map(data => data.revenue));
   const totalMarketingLeads = marketingData.reduce((sum, channel) => sum + channel.leads, 0);
   const totalSalesLeads = salesData.reduce((sum, data) => sum + data.leads, 0);
+  const totalMarketingRevenue = marketingData.reduce((sum, channel) => sum + channel.revenue, 0);
+  const totalSalesRevenue = salesData.reduce((sum, data) => sum + data.revenue, 0);
   const conversionRate = ((totalSalesLeads / totalMarketingLeads) * 100).toFixed(1);
+  const revenueConversionRate = ((totalSalesRevenue / totalMarketingRevenue) * 100).toFixed(1);
 
   return (
     <div className="space-y-8">
@@ -136,23 +139,31 @@ export function MarketingSalesAnalysis() {
           <div className="space-y-4">
             {/* Marketing Stage */}
             <div className="bg-primary/10 p-4 rounded-t-lg">
-              <div className="text-center">
+              <div className="text-center space-y-2">
                 <h3 className="font-medium">Marketing Qualified Leads</h3>
                 <p className="text-2xl font-bold">{totalMarketingLeads.toLocaleString()}</p>
+                <p className="text-lg text-muted-foreground">
+                  Revenue: ${totalMarketingRevenue.toLocaleString()}
+                </p>
               </div>
             </div>
             {/* Conversion Arrow */}
             <div className="flex justify-center">
-              <div className="text-center bg-secondary/20 px-4 py-2 rounded">
-                <p className="text-sm text-muted-foreground">Conversion Rate</p>
+              <div className="text-center bg-secondary/20 px-4 py-2 rounded space-y-1">
+                <p className="text-sm text-muted-foreground">Lead Conversion Rate</p>
                 <p className="font-medium">{conversionRate}%</p>
+                <p className="text-sm text-muted-foreground">Revenue Conversion Rate</p>
+                <p className="font-medium">{revenueConversionRate}%</p>
               </div>
             </div>
             {/* Sales Stage */}
             <div className="bg-primary/20 p-4 rounded-b-lg">
-              <div className="text-center">
+              <div className="text-center space-y-2">
                 <h3 className="font-medium">Sales Qualified Leads</h3>
                 <p className="text-2xl font-bold">{totalSalesLeads.toLocaleString()}</p>
+                <p className="text-lg text-muted-foreground">
+                  Revenue: ${totalSalesRevenue.toLocaleString()}
+                </p>
               </div>
             </div>
           </div>
