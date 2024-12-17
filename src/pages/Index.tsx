@@ -7,6 +7,7 @@ import { PerformanceChart } from "@/components/PerformanceChart";
 import { CustomerFunnels } from "@/components/CustomerFunnels";
 import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
 import { LandingPagesTable } from "@/components/LandingPagesTable";
+import { SalesComparison } from "@/components/SalesComparison";
 
 // Function to generate random number within a range
 const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -114,6 +115,9 @@ export default function Index() {
 
         {/* Customer Funnels */}
         <CustomerFunnels />
+
+        {/* Sales Comparison */}
+        <SalesComparison />
 
         {/* Traffic Sources */}
         <TrafficSourcesGrid />
