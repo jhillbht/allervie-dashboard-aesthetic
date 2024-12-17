@@ -66,7 +66,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
             key={`label-${index}`}
             x={0}
             y={0}
-            fill="#6B7280"
+            fill="#10B981"
             textAnchor="middle"
             fontSize={12}
             transform={`translate(${index * 100}, 50)`}
