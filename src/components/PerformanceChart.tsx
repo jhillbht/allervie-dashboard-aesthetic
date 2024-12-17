@@ -58,6 +58,28 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
     return null;
   };
 
+  const renderDesktopLabels = () => {
+    if (!isMobile) {
+      return data.map((entry, index) => 
+        entry.campaign ? (
+          <text
+            key={`label-${index}`}
+            x={0}
+            y={0}
+            fill="#6B7280"
+            textAnchor="middle"
+            fontSize={12}
+            transform={`translate(${index * 100}, 50)`}
+          >
+            {entry.campaign}
+          </text>
+        ) : null
+      );
+    }
+
+    return null;
+  };
+
   return (
     <div className={`bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full ${isLandscape ? 'fixed inset-0 z-50' : ''}`}>
       <h2 className="text-lg font-medium mb-6">Performance Over Time</h2>
@@ -86,20 +108,6 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                 interval={0}
                 height={60}
                 tickMargin={10}
-                label={(props) => {
-                  const entry = data[props.index];
-                  return entry?.campaign ? (
-                    <text
-                      x={props.x}
-                      y={props.y + 30}
-                      fill="#6B7280"
-                      textAnchor="middle"
-                      fontSize={12}
-                    >
-                      {entry.campaign}
-                    </text>
-                  ) : null;
-                }}
               />
             )}
             {isMobile && (
@@ -153,6 +161,11 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
           </LineChart>
         </ResponsiveContainer>
       </div>
+      {!isMobile && (
+        <div className="flex justify-center mt-4">
+          {renderDesktopLabels()}
+        </div>
+      )}
     </div>
   );
 }
