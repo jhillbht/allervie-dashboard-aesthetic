@@ -1,15 +1,8 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
-import { Mail, Facebook } from "lucide-react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useIsMobile } from "@/hooks/use-mobile";
-
-interface ChartDataPoint {
-  name: string;
-  current: number;
-  previous: number;
-  campaign?: string;
-  icon?: typeof Mail | typeof Facebook;
-}
+import { CampaignLabels } from './chart/CampaignLabels';
+import { ChartDataPoint, CHART_COLORS, getChartMargins } from './chart/chart-utils';
 
 interface PerformanceChartProps {
   data: ChartDataPoint[];
@@ -24,61 +17,10 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
       setIsLandscape(window.orientation === 90 || window.orientation === -90);
     };
 
-    // Initial check
     handleOrientationChange();
-
-    // Listen for orientation changes
     window.addEventListener('orientationchange', handleOrientationChange);
     return () => window.removeEventListener('orientationchange', handleOrientationChange);
   }, []);
-
-  const renderCampaignLabels = () => {
-    if (isMobile) {
-      return data.map((entry) => 
-        entry.campaign ? (
-          <React.Fragment key={entry.campaign}>
-            <ReferenceLine
-              x={entry.name}
-              stroke="#10B981"
-              strokeDasharray="3 3"
-              label={{
-                position: 'insideBottom',
-                value: entry.campaign,
-                fill: '#10B981',
-                fontSize: isLandscape ? 12 : 10,
-                angle: 90,
-                offset: 10
-              }}
-            />
-          </React.Fragment>
-        ) : null
-      );
-    }
-
-    return null;
-  };
-
-  const renderDesktopLabels = () => {
-    if (!isMobile) {
-      return data.map((entry, index) => 
-        entry.campaign ? (
-          <text
-            key={`label-${index}`}
-            x={0}
-            y={0}
-            fill="#10B981"
-            textAnchor="middle"
-            fontSize={12}
-            transform={`translate(${index * 100}, 50)`}
-          >
-            {entry.campaign}
-          </text>
-        ) : null
-      );
-    }
-
-    return null;
-  };
 
   return (
     <div className={`bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full ${isLandscape ? 'fixed inset-0 z-50' : ''}`}>
@@ -87,49 +29,27 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
-            margin={{ 
-              top: 20, 
-              right: isLandscape ? 50 : 40, 
-              left: isLandscape ? 60 : 50, 
-              bottom: isMobile ? 40 : 60 
-            }}
+            margin={getChartMargins(isLandscape, isMobile)}
           >
-            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-            {!isMobile && (
-              <XAxis
-                dataKey="name"
-                stroke="#6B7280"
-                axisLine={{ strokeWidth: 1 }}
-                tick={{ 
-                  dy: 20, 
-                  fontSize: isLandscape ? 14 : 12,
-                  fill: "#6B7280"
-                }}
-                interval={0}
-                height={60}
-                tickMargin={10}
-              />
-            )}
-            {isMobile && (
-              <XAxis
-                dataKey="name"
-                stroke="#6B7280"
-                axisLine={{ strokeWidth: 1 }}
-                tick={{ 
-                  dy: 20, 
-                  fontSize: isLandscape ? 14 : 12,
-                  fill: "#6B7280"
-                }}
-                interval={0}
-                height={40}
-                tickMargin={10}
-              />
-            )}
-            <YAxis 
-              stroke="#6B7280"
-              tick={{ 
+            <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.border} />
+            <XAxis
+              dataKey="name"
+              stroke={CHART_COLORS.gray}
+              axisLine={{ strokeWidth: 1 }}
+              tick={{
+                dy: 20,
                 fontSize: isLandscape ? 14 : 12,
-                fill: "#6B7280"
+                fill: CHART_COLORS.gray
+              }}
+              interval={0}
+              height={isMobile ? 40 : 60}
+              tickMargin={10}
+            />
+            <YAxis
+              stroke={CHART_COLORS.gray}
+              tick={{
+                fontSize: isLandscape ? 14 : 12,
+                fill: CHART_COLORS.gray
               }}
               width={isLandscape ? 60 : 50}
               tickMargin={8}
@@ -146,25 +66,31 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
             <Line
               type="monotone"
               dataKey="current"
-              stroke="#3B82F6"
+              stroke={CHART_COLORS.blue}
               strokeWidth={2}
               dot={false}
             />
             <Line
               type="monotone"
               dataKey="previous"
-              stroke="#6B7280"
+              stroke={CHART_COLORS.gray}
               strokeWidth={2}
               dot={false}
             />
-            {renderCampaignLabels()}
+            <CampaignLabels
+              data={data}
+              isMobile={isMobile}
+              isLandscape={isLandscape}
+            />
           </LineChart>
         </ResponsiveContainer>
       </div>
       {!isMobile && (
-        <div className="flex justify-center mt-4">
-          {renderDesktopLabels()}
-        </div>
+        <CampaignLabels
+          data={data}
+          isMobile={isMobile}
+          isLandscape={isLandscape}
+        />
       )}
     </div>
   );
