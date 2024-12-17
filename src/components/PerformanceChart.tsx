@@ -15,32 +15,52 @@ interface PerformanceChartProps {
 }
 
 export function PerformanceChart({ data }: PerformanceChartProps) {
+  const [isLandscape, setIsLandscape] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleOrientationChange = () => {
+      setIsLandscape(window.orientation === 90 || window.orientation === -90);
+    };
+
+    // Initial check
+    handleOrientationChange();
+
+    // Listen for orientation changes
+    window.addEventListener('orientationchange', handleOrientationChange);
+    return () => window.removeEventListener('orientationchange', handleOrientationChange);
+  }, []);
+
   return (
-    <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
+    <div className={`bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full ${isLandscape ? 'fixed inset-0 z-50' : ''}`}>
       <h2 className="text-lg font-medium mb-6">Performance Over Time</h2>
-      <div className="h-[400px] w-full">
+      <div className={`${isLandscape ? 'h-screen' : 'h-[400px]'} w-full`}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
-            margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+            margin={{ 
+              top: 20, 
+              right: isLandscape ? 40 : 30, 
+              left: isLandscape ? 30 : 20, 
+              bottom: 60 
+            }}
           >
             <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
             <XAxis
               dataKey="name"
               stroke="#6B7280"
               axisLine={{ strokeWidth: 1 }}
-              tick={{ dy: 10, fontSize: 9 }}
+              tick={{ dy: 10, fontSize: isLandscape ? 12 : 9 }}
             />
             <YAxis 
               stroke="#6B7280"
-              tick={{ fontSize: 9 }}
+              tick={{ fontSize: isLandscape ? 12 : 9 }}
             />
             <Tooltip
               contentStyle={{
                 backgroundColor: "#1F2937",
                 border: "none",
                 borderRadius: "8px",
-                fontSize: "9px"
+                fontSize: isLandscape ? "12px" : "9px"
               }}
             />
             <Line
@@ -68,7 +88,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
                       position: 'bottom',
                       value: entry.campaign,
                       fill: '#10B981',
-                      fontSize: 9,
+                      fontSize: isLandscape ? 12 : 9,
                       dy: 40
                     }}
                   />
