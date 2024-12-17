@@ -50,7 +50,10 @@ export function TrafficSourceCard({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <p className="text-sm text-muted-foreground mb-1">Revenue</p>
-          <p className={cn("font-medium", isHighestRevenue && "text-green-500")}>
+          <p className={cn(
+            "font-medium",
+            isHighestRevenue && "text-[#22c55e]"
+          )}>
             ${revenue.toLocaleString()}
           </p>
         </div>
