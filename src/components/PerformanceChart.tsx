@@ -3,6 +3,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CampaignLabels } from './chart/CampaignLabels';
 import { ChartDataPoint, CHART_COLORS, getChartMargins } from './chart/chart-utils';
+import { Button } from './ui/button';
+import { Download } from 'lucide-react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { toast } from "sonner";
 
 interface PerformanceChartProps {
   data: ChartDataPoint[];
@@ -11,6 +16,7 @@ interface PerformanceChartProps {
 export function PerformanceChart({ data }: PerformanceChartProps) {
   const [isLandscape, setIsLandscape] = React.useState(false);
   const isMobile = useIsMobile();
+  const chartRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleOrientationChange = () => {
@@ -22,10 +28,49 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
     return () => window.removeEventListener('orientationchange', handleOrientationChange);
   }, []);
 
+  const handleExport = async () => {
+    if (!chartRef.current) return;
+
+    try {
+      toast.loading("Generating PDF...");
+      
+      const canvas = await html2canvas(chartRef.current, {
+        scale: 2,
+        backgroundColor: null,
+      });
+      
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height]
+      });
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      pdf.save('performance-chart.pdf');
+      
+      toast.success("PDF exported successfully!");
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+      toast.error("Failed to export PDF. Please try again.");
+    }
+  };
+
   return (
     <div className={`bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full ${isLandscape ? 'fixed inset-0 z-50' : ''}`}>
-      <h2 className="text-lg font-medium mb-6">Performance Over Time</h2>
-      <div className={`${isLandscape ? 'h-screen' : 'h-[400px]'} w-full`}>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-lg font-medium">Performance Over Time</h2>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleExport}
+          className="gap-2"
+        >
+          <Download className="h-4 w-4" />
+          Export PDF
+        </Button>
+      </div>
+      <div ref={chartRef} className={`${isLandscape ? 'h-screen' : 'h-[400px]'} w-full`}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
