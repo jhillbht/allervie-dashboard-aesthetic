@@ -7,7 +7,6 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -20,7 +19,12 @@ serve(async (req) => {
 
     const { endpoint, method = 'GET', data } = await req.json()
 
-    const response = await fetch(`https://api.toolhouse.com${endpoint}`, {
+    // Special handling for VAPI chat endpoint
+    const baseUrl = endpoint.startsWith('/vapi') 
+      ? 'https://api.vapi.ai' 
+      : 'https://api.toolhouse.com';
+
+    const response = await fetch(`${baseUrl}${endpoint}`, {
       method,
       headers: {
         'Authorization': `Bearer ${apiKey}`,
@@ -30,7 +34,7 @@ serve(async (req) => {
     })
 
     const result = await response.json()
-    console.log('ToolHouse API Response:', result)
+    console.log('API Response:', result)
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

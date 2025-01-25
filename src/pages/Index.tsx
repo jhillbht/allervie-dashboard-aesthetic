@@ -8,6 +8,7 @@ import { CustomerFunnels } from "@/components/CustomerFunnels";
 import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
 import { LandingPagesTable } from "@/components/LandingPagesTable";
 import { MarketingSalesAnalysis } from "@/components/MarketingSalesAnalysis";
+import { FloatingChatButton } from "@/components/FloatingChatButton";
 
 // Function to generate random number within a range
 const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -125,6 +126,7 @@ export default function Index() {
         {/* Landing Pages Table */}
         <LandingPagesTable />
       </div>
+      <FloatingChatButton />
     </div>
   );
 }
