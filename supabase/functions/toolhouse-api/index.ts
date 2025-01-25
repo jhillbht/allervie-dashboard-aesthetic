@@ -7,6 +7,7 @@ const corsHeaders = {
 }
 
 serve(async (req) => {
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
   }
@@ -15,6 +16,15 @@ serve(async (req) => {
     const apiKey = Deno.env.get('TOOLHOUSE_API_KEY')
     if (!apiKey) {
       throw new Error('ToolHouse API key not found')
+    }
+
+    // Verify authorization
+    const authHeader = req.headers.get('Authorization')
+    if (!authHeader) {
+      return new Response(
+        JSON.stringify({ error: 'No authorization header' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
     }
 
     const { endpoint, method = 'GET', data } = await req.json()
