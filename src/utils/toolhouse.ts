@@ -9,8 +9,16 @@ interface ToolHouseApiOptions {
 export async function callToolHouseApi({ endpoint, method = 'GET', data }: ToolHouseApiOptions) {
   try {
     const { data: sessionData } = await supabase.auth.getSession();
+    
+    // Ensure endpoint starts with a forward slash
+    const formattedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    
     const { data: response, error } = await supabase.functions.invoke('toolhouse-api', {
-      body: { endpoint, method, data },
+      body: { 
+        endpoint: formattedEndpoint,
+        method, 
+        data 
+      },
       headers: {
         Authorization: `Bearer ${sessionData.session?.access_token || ''}`
       }
