@@ -34,6 +34,15 @@ serve(async (req) => {
       ? 'https://api.vapi.ai' 
       : 'https://api.toolhouse.com';
 
+    console.log(`Making request to ${baseUrl}${endpoint}`, {
+      method,
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: method !== 'GET' ? JSON.stringify(data) : undefined,
+    });
+
     const response = await fetch(`${baseUrl}${endpoint}`, {
       method,
       headers: {

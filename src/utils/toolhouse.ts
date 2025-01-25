@@ -8,11 +8,11 @@ interface ToolHouseApiOptions {
 
 export async function callToolHouseApi({ endpoint, method = 'GET', data }: ToolHouseApiOptions) {
   try {
-    // Ensure we're using the proper invoke method with authorization
+    const { data: session } = await supabase.auth.getSession();
     const { data: response, error } = await supabase.functions.invoke('toolhouse-api', {
       body: { endpoint, method, data },
       headers: {
-        Authorization: `Bearer ${supabase.auth.getSession()}`
+        Authorization: `Bearer ${session?.access_token || ''}`
       }
     });
 
