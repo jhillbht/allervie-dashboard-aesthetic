@@ -32,14 +32,18 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
     if (!chartRef.current) return;
 
     try {
-      toast.loading("Generating PDF...");
+      const toastId = toast.loading("Generating PDF...");
       
       const canvas = await html2canvas(chartRef.current, {
         scale: 2,
-        backgroundColor: null,
+        backgroundColor: '#ffffff',
+        logging: false,
+        allowTaint: true,
+        useCORS: true,
+        removeContainer: true
       });
       
-      const imgData = canvas.toDataURL('image/png');
+      const imgData = canvas.toDataURL('image/png', 1.0);
       const pdf = new jsPDF({
         orientation: 'landscape',
         unit: 'px',
@@ -49,6 +53,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
       pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
       pdf.save('performance-chart.pdf');
       
+      toast.dismiss(toastId);
       toast.success("PDF exported successfully!");
     } catch (error) {
       console.error('Error exporting PDF:', error);
