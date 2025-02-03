@@ -100,6 +100,80 @@ export type Database = {
         }
         Relationships: []
       }
+      report_templates: {
+        Row: {
+          config: Json
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          user_id: string
+        }
+        Insert: {
+          config: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          user_id: string
+        }
+        Update: {
+          config?: Json
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      scheduled_reports: {
+        Row: {
+          created_at: string
+          format: string
+          id: string
+          last_run: string | null
+          name: string
+          next_run: string | null
+          recipients: Json | null
+          schedule: string
+          template_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          format: string
+          id?: string
+          last_run?: string | null
+          name: string
+          next_run?: string | null
+          recipients?: Json | null
+          schedule: string
+          template_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          format?: string
+          id?: string
+          last_run?: string | null
+          name?: string
+          next_run?: string | null
+          recipients?: Json | null
+          schedule?: string
+          template_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_reports_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "report_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       secrets: {
         Row: {
           created_at: string
