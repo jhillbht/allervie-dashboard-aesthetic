@@ -9,6 +9,97 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      acquisition_costs: {
+        Row: {
+          cost: number
+          created_at: string
+          date: string
+          id: string
+          lead_source_id: string | null
+          user_id: string
+        }
+        Insert: {
+          cost: number
+          created_at?: string
+          date: string
+          id?: string
+          lead_source_id?: string | null
+          user_id: string
+        }
+        Update: {
+          cost?: number
+          created_at?: string
+          date?: string
+          id?: string
+          lead_source_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "acquisition_costs_lead_source_id_fkey"
+            columns: ["lead_source_id"]
+            isOneToOne: false
+            referencedRelation: "lead_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversions: {
+        Row: {
+          amount: number | null
+          created_at: string
+          id: string
+          lead_source_id: string | null
+          stage: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          id?: string
+          lead_source_id?: string | null
+          stage: string
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          id?: string
+          lead_source_id?: string | null
+          stage?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversions_lead_source_id_fkey"
+            columns: ["lead_source_id"]
+            isOneToOne: false
+            referencedRelation: "lead_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_sources: {
+        Row: {
+          created_at: string
+          id: string
+          source_name: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          source_name: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          source_name?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       secrets: {
         Row: {
           created_at: string
