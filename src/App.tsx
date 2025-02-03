@@ -31,13 +31,17 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 3,
-      onError: (error) => {
-        Sentry.captureException(error);
+      meta: {
+        onError: (error: Error) => {
+          Sentry.captureException(error);
+        },
       },
     },
     mutations: {
-      onError: (error) => {
-        Sentry.captureException(error);
+      meta: {
+        onError: (error: Error) => {
+          Sentry.captureException(error);
+        },
       },
     },
   },
