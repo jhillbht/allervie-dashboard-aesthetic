@@ -4,7 +4,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Area, AreaChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
 
 const data = [
   { date: "Jan", leads: 400 },
@@ -39,9 +39,7 @@ export function LeadChart() {
               fill="#38BDF8"
               fillOpacity={0.2}
             />
-            <ChartTooltip>
-              <ChartTooltipContent />
-            </ChartTooltip>
+            <Tooltip content={<ChartTooltipContent />} />
           </AreaChart>
         </ChartContainer>
       </CardContent>
