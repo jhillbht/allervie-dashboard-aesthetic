@@ -32,10 +32,10 @@ export function LoginForm() {
       });
       
       navigate("/dashboard");
-    } catch (error) {
+    } catch (error: any) {
       toast({
         title: "Error",
-        description: "Failed to log in. Please try again.",
+        description: error.message || "Failed to log in. Please try again.",
         variant: "destructive",
       });
     } finally {
