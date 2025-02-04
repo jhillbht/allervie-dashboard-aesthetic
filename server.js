@@ -9,18 +9,14 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Enable gzip compression
 app.use(compression());
 
-// Serve static files from the dist directory
 app.use(express.static(join(__dirname, 'dist')));
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'healthy' });
 });
 
-// Handle SPA routing - serve index.html for all routes
 app.get('*', (req, res) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
