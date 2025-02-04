@@ -1,18 +1,59 @@
-name: lead-generation-dashboard
+name: allervie-dashboard
+region: sfo
 services:
   - name: web
     git:
       branch: main
-      repo_clone_url: ${_REPO_URL}
+      repo_clone_url: https://github.com/jhillbht/allervie-dashboard.git
     build_command: npm run build
-    run_command: npm run preview
-    envs:
-      - key: VITE_SUPABASE_URL
-        value: ${VITE_SUPABASE_URL}
-      - key: VITE_SUPABASE_ANON_KEY
-        value: ${VITE_SUPABASE_ANON_KEY}
-    http_port: 4173
+    run_command: npm start
+    environment_slug: node-js
+    instance_size_slug: basic-xs
     instance_count: 1
-    instance_size_slug: basic-xxs
+    http_port: 8080
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 30
     routes:
       - path: /
+    envs:
+      - key: NODE_ENV
+        scope: RUN_TIME
+        value: production
+      - key: VITE_SUPABASE_URL
+        scope: BUILD_TIME
+        type: SECRET
+        value: ${supabase_url}
+      - key: VITE_SUPABASE_ANON_KEY
+        scope: BUILD_TIME
+        type: SECRET
+        value: ${supabase_anon_key}
+    alert_policies:
+      - rule: DEPLOYMENT_FAILED
+        operator: EQUALS
+        value: 1
+        window: 1m
+      - rule: CPU_UTILIZATION
+        operator: GREATER_THAN
+        value: 80
+        window: 5m
+
+static_sites:
+  - name: dashboard-static
+    environment_slug: node-js
+    git:
+      branch: main
+      repo_clone_url: https://github.com/jhillbht/allervie-dashboard.git
+    build_command: npm run build
+    output_dir: dist
+    catchall_document: index.html
+    routes:
+      - path: /
+
+databases:
+  - engine: PG
+    name: dashboard-db
+    num_nodes: 1
+    size: db-s-dev-database
+    version: "12"
