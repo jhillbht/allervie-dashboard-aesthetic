@@ -41,10 +41,7 @@ const config: UserConfig = {
             '@radix-ui/react-toast'
           ],
           'chart-vendor': ['recharts']
-        },
-        assetFileNames: 'assets/[name]-[hash][extname]',
-        chunkFileNames: 'assets/[name]-[hash].js',
-        entryFileNames: 'assets/[name]-[hash].js'
+        }
       }
     }
   },
@@ -64,6 +61,12 @@ const config: UserConfig = {
       'Cache-Control': 'no-store',
       'X-Frame-Options': 'DENY'
     }
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom']
+  },
+  esbuild: {
+    jsxInject: `import React from 'react'`
   }
 } as const;
 
