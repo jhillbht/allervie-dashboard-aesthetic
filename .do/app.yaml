@@ -1,63 +1,44 @@
 name: allervie-dashboard
-region: sfo
+region: nyc
 services:
   - name: web
-    git:
+    github:
+      repo: jhillbht/allervie-dashboard
       branch: main
-      repo_clone_url: https://github.com/jhillbht/allervie-dashboard.git
-    build_command: chmod +x ./scripts/validate-build.sh && ./scripts/validate-build.sh && npm run build
+      deploy_on_push: true
+    build_command: npm run build
     run_command: npm start
-    environment_slug: node-js
-    instance_size_slug: professional-xs
     instance_count: 1
+    instance_size_slug: basic-xxs
     http_port: 8080
-    health_check:
-      http_path: /health
-      initial_delay_seconds: 10
-      period_seconds: 30
-      timeout_seconds: 5
-      success_threshold: 1
-      failure_threshold: 3
     routes:
       - path: /
     envs:
       - key: NODE_ENV
-        scope: RUN_TIME
+        scope: RUN_AND_BUILD_TIME
         value: production
-      - key: NODE_VERSION
-        scope: BUILD_TIME
-        value: 18.19.0
-      - key: NPM_VERSION
-        scope: BUILD_TIME
-        value: 10.2.3
       - key: VITE_SUPABASE_URL
         scope: BUILD_TIME
         type: SECRET
-        value: ${supabase_url}
       - key: VITE_SUPABASE_ANON_KEY
         scope: BUILD_TIME
         type: SECRET
-        value: ${supabase_anon_key}
-    alert_policies:
-      - rule: DEPLOYMENT_FAILED
-        operator: EQUALS
-        value: 1
-        window: 1m
-      - rule: CPU_UTILIZATION
-        operator: GREATER_THAN
-        value: 80
-        window: 5m
-      - rule: MEM_UTILIZATION
-        operator: GREATER_THAN
-        value: 80
-        window: 5m
-      - rule: HTTP_5XX_ERROR_RATE
-        operator: GREATER_THAN
-        value: 2
-        window: 5m
+      - key: VITE_GA_MEASUREMENT_ID
+        scope: BUILD_TIME
+        type: SECRET
+      - key: VITE_GOOGLE_ADS_CONVERSION_IDS
+        scope: BUILD_TIME
+        type: SECRET
+    health_check:
+      http_path: /health
+      initial_delay_seconds: 10
+      period_seconds: 10
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
     cors:
       allow_origins:
-        - https://allervie.com
+        - "https://*.allervie.com"
       allow_methods:
         - GET
         - POST
@@ -67,49 +48,10 @@ services:
       allow_headers:
         - Authorization
         - Content-Type
-      max_age: 86400
-    features:
-      - request-logging
-      - access-logging
-      - autoscaling
-    autoscaling:
-      min_replicas: 1
-      max_replicas: 3
-      metrics:
-        - type: cpu_utilization
-          target_percentage: 80
-        - type: memory_utilization
-          target_percentage: 80
-
-static_sites:
-  - name: dashboard-static
-    environment_slug: node-js
-    git:
-      branch: main
-      repo_clone_url: https://github.com/jhillbht/allervie-dashboard.git
-    build_command: npm run build
-    output_dir: dist
-    catchall_document: index.html
-    routes:
-      - path: /
-
-databases:
-  - engine: PG
-    name: dashboard-db
-    num_nodes: 1
-    size: db-s-dev-database
-    version: "12"
-
-functions:
-  - name: dashboard-functions
-    source_dir: functions
-    github:
-      branch: main
-      repo: jhillbht/allervie-dashboard
-    routes:
-      - path: /api
-    alert_policies:
-      - rule: FUNCTION_EXECUTION_TIME
-        operator: GREATER_THAN
-        value: 5000
-        window: 5m
+      max_age: "86400"
+    alert:
+      rule: CPU_UTILIZATION
+      value: 90
+      operator: GREATER_THAN
+      window: FIVE_MINUTES
+      period: TWENTY_FOUR_HOURS
