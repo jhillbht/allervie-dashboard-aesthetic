@@ -2,30 +2,27 @@ name: allervie-dashboard
 region: nyc
 services:
   - name: web
-    # Git integration configuration
     github:
       repo: jhillbht/allervie-dashboard
       branch: main
       deploy_on_push: true
     
     # Build configuration
-    build_command: npm run build
+    build_command: |
+      if [ ! -f "package-lock.json" ]; then
+        echo "No package-lock.json found, running npm install..."
+        npm install
+      else
+        echo "Using existing package-lock.json..."
+        npm ci
+      fi
+      npm run build
     run_command: npm start
     
     # Instance configuration
     instance_count: 1
-    instance_size_slug: basic-xxs  # 512MB RAM, shared CPU
+    instance_size_slug: basic-xxs
     http_port: 8080
-    
-    # Static file handling
-    source_dir: /
-    output_dir: /dist
-    static_sites:
-      - name: static-assets
-        environment_slug: node-js
-        source_dir: dist
-        output_dir: dist
-        catchall_document: index.html
     
     # Route configuration
     routes:
@@ -59,8 +56,8 @@ services:
     # Health check configuration
     health_check:
       http_path: /health
-      initial_delay_seconds: 10
-      period_seconds: 10
+      initial_delay_seconds: 20
+      period_seconds: 15
       timeout_seconds: 5
       success_threshold: 1
       failure_threshold: 3
@@ -87,17 +84,3 @@ services:
       operator: GREATER_THAN
       window: FIVE_MINUTES
       period: TWENTY_FOUR_HOURS
-    
-    # Auto-scaling configuration (if needed in the future)
-    # min_instances: 1
-    # max_instances: 3
-    # scaling_strategy:
-    #   metrics:
-    #     - type: CPU_UTILIZATION
-    #       target_value: 70
-    
-    # Domain configuration
-    domains:
-      - domain: dashboard.allervie.com
-        type: PRIMARY
-        zone: allervie.com
