@@ -2,33 +2,61 @@ name: allervie-dashboard
 region: nyc
 services:
   - name: web
+    # Git integration configuration
     github:
       repo: jhillbht/allervie-dashboard
       branch: main
       deploy_on_push: true
+    
+    # Build configuration
     build_command: npm run build
     run_command: npm start
+    
+    # Instance configuration
     instance_count: 1
-    instance_size_slug: basic-xxs
+    instance_size_slug: basic-xxs  # 512MB RAM, shared CPU
     http_port: 8080
+    
+    # Static file handling
+    source_dir: /
+    output_dir: /dist
+    static_sites:
+      - name: static-assets
+        environment_slug: node-js
+        source_dir: dist
+        output_dir: dist
+        catchall_document: index.html
+    
+    # Route configuration
     routes:
       - path: /
+        preserve_path_prefix: true
+    
+    # Environment variables
     envs:
       - key: NODE_ENV
         scope: RUN_AND_BUILD_TIME
         value: production
+      
+      # Supabase configuration
       - key: VITE_SUPABASE_URL
         scope: BUILD_TIME
         type: SECRET
       - key: VITE_SUPABASE_ANON_KEY
         scope: BUILD_TIME
         type: SECRET
+      
+      # Google Analytics configuration
       - key: VITE_GA_MEASUREMENT_ID
         scope: BUILD_TIME
         type: SECRET
+      
+      # Google Ads configuration
       - key: VITE_GOOGLE_ADS_CONVERSION_IDS
         scope: BUILD_TIME
         type: SECRET
+    
+    # Health check configuration
     health_check:
       http_path: /health
       initial_delay_seconds: 10
@@ -36,6 +64,8 @@ services:
       timeout_seconds: 5
       success_threshold: 1
       failure_threshold: 3
+    
+    # CORS configuration
     cors:
       allow_origins:
         - "https://*.allervie.com"
@@ -48,10 +78,26 @@ services:
       allow_headers:
         - Authorization
         - Content-Type
-      max_age: "86400"
+      max_age: "86400"  # 24 hours
+    
+    # Alert configuration
     alert:
       rule: CPU_UTILIZATION
       value: 90
       operator: GREATER_THAN
       window: FIVE_MINUTES
       period: TWENTY_FOUR_HOURS
+    
+    # Auto-scaling configuration (if needed in the future)
+    # min_instances: 1
+    # max_instances: 3
+    # scaling_strategy:
+    #   metrics:
+    #     - type: CPU_UTILIZATION
+    #       target_value: 70
+    
+    # Domain configuration
+    domains:
+      - domain: dashboard.allervie.com
+        type: PRIMARY
+        zone: allervie.com
