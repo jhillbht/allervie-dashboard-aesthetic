@@ -1,0 +1,76 @@
+name: Validate Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    env:
+      NODE_VERSION: 18.19.0
+      NPM_VERSION: 10.2.3
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          
+      - name: Install npm version
+        run: npm install -g npm@${{ env.NPM_VERSION }}
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Type check
+        run: npm run typecheck
+        
+      - name: Lint
+        run: npm run lint
+        
+      - name: Build client
+        run: npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          
+      - name: Build server
+        run: npm run build:server
+        
+      - name: Validate build output
+        run: |
+          if [ ! -d "dist" ]; then
+            echo "❌ dist directory not found"
+            exit 1
+          fi
+          if [ ! -f "dist/index.html" ]; then
+            echo "❌ index.html not found in dist"
+            exit 1
+          fi
+          if [ ! -f "dist/server.js" ]; then
+            echo "❌ server.js not found in dist"
+            exit 1
+          fi
+          
+      - name: Test server startup
+        run: |
+          node --experimental-specifier-resolution=node dist/server.js & 
+          SERVER_PID=$!
+          sleep 5
+          curl -f http://localhost:8080/health || exit 1
+          kill $SERVER_PID
