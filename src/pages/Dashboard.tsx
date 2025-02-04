@@ -1,63 +1,50 @@
-import { DashboardLayout } from "@/components/dashboard/DashboardLayout";
-import { KPICard } from "@/components/dashboard/KPICard";
-import { LeadChart } from "@/components/dashboard/LeadChart";
-import { SourceBreakdown } from "@/components/dashboard/SourceBreakdown";
-import { Users, TrendingUp, DollarSign, Target } from "lucide-react";
+import React from 'react';
+import { Card } from '@/components/ui/card';
+import { useDashboardData } from '@/hooks/use-dashboard-data';
+import { LineChart } from '@/components/charts/line-chart';
 
-const Dashboard = () => {
-  const kpiData = [
-    {
-      title: "Total Leads",
-      value: "1,234",
-      change: "+12.3% from last month",
-      icon: Users,
-      trend: "up" as const,
-    },
-    {
-      title: "Conversion Rate",
-      value: "3.2%",
-      change: "+0.5% from last month",
-      icon: TrendingUp,
-      trend: "up" as const,
-    },
-    {
-      title: "Cost per Lead",
-      value: "$45.67",
-      change: "-2.3% from last month",
-      icon: DollarSign,
-      trend: "down" as const,
-    },
-    {
-      title: "Campaign ROI",
-      value: "156%",
-      change: "No change",
-      icon: Target,
-      trend: "neutral" as const,
-    },
-  ];
+const Dashboard: React.FC = () => {
+  const { metrics, chartData, isLoading, error } = useDashboardData();
+
+  if (error) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-destructive">Failed to load dashboard data</p>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p>Loading dashboard data...</p>
+      </div>
+    );
+  }
 
   return (
-    <DashboardLayout>
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Welcome to your lead generation overview
-          </p>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {kpiData.map((kpi) => (
-            <KPICard key={kpi.title} {...kpi} />
-          ))}
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-6">
-          <LeadChart />
-          <SourceBreakdown />
-        </div>
+    <div className="container mx-auto p-6">
+      <h1 className="mb-6 text-3xl font-bold">Dashboard</h1>
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {/* Metrics cards will go here */}
+        <Card className="p-6">
+          <h2 className="text-lg font-semibold">Total Leads</h2>
+          <p className="mt-2 text-3xl">0</p>
+        </Card>
       </div>
-    </DashboardLayout>
+      
+      <div className="mt-6">
+        <Card className="p-6">
+          <h2 className="mb-4 text-lg font-semibold">Lead Analytics</h2>
+          <div className="h-[300px]">
+            {/* Chart will go here when data is available */}
+            <div className="flex h-full items-center justify-center border-2 border-dashed rounded">
+              <p className="text-muted-foreground">No data available</p>
+            </div>
+          </div>
+        </Card>
+      </div>
+    </div>
   );
 };
 
