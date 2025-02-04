@@ -1,0 +1,69 @@
+name: Deploy to DigitalOcean
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    environment:
+      name: production
+      url: https://allervie-dashboard.ondigitalocean.app
+    
+    env:
+      DIGITALOCEAN_ACCESS_TOKEN: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          
+      - name: Login to DigitalOcean Container Registry
+        run: doctl registry login
+        
+      - name: Deploy to DigitalOcean App Platform
+        run: |
+          doctl apps create-deployment ${{ secrets.DIGITALOCEAN_APP_ID }} \
+            --wait \
+            --force-rebuild
+            
+      - name: Verify Deployment
+        run: |
+          echo "Waiting for deployment to complete..."
+          sleep 30
+          STATUS=$(doctl apps get-deployment $(doctl apps list-deployments ${{ secrets.DIGITALOCEAN_APP_ID }} --format ID --no-header | head -n 1) --format Progress --no-header)
+          if [ "$STATUS" != "100" ]; then
+            echo "Deployment failed with status: $STATUS"
+            exit 1
+          fi
+          
+      - name: Check Application Health
+        run: |
+          echo "Checking application health..."
+          HEALTH_CHECK=$(curl -s https://allervie-dashboard.ondigitalocean.app/health)
+          if [[ $HEALTH_CHECK != *"healthy"* ]]; then
+            echo "Health check failed"
+            exit 1
+          fi
+          echo "Application is healthy!"
+          
+      - name: Notify on Success
+        if: success()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"text":"✅ Successfully deployed allervie-dashboard to production"}' \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
+            
+      - name: Notify on Failure
+        if: failure()
+        run: |
+          curl -X POST -H "Content-Type: application/json" \
+            -d '{"text":"❌ Failed to deploy allervie-dashboard to production"}' \
+            ${{ secrets.SLACK_WEBHOOK_URL }}
