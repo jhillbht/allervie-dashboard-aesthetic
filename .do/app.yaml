@@ -7,15 +7,17 @@ services:
       branch: main
       deploy_on_push: true
     
-    # Build configuration
+    # Build configuration with npm version management
     build_command: |
+      echo "Updating npm to version 10.4.0..."
+      npm install -g npm@10.4.0
+      echo "Installing dependencies..."
       if [ ! -f "package-lock.json" ]; then
-        echo "No package-lock.json found, running npm install..."
         npm install
       else
-        echo "Using existing package-lock.json..."
         npm ci
       fi
+      echo "Building application..."
       npm run build
     run_command: npm start
     
@@ -53,10 +55,10 @@ services:
         scope: BUILD_TIME
         type: SECRET
     
-    # Health check configuration
+    # Health check configuration with adjusted timings
     health_check:
       http_path: /health
-      initial_delay_seconds: 20
+      initial_delay_seconds: 30
       period_seconds: 15
       timeout_seconds: 5
       success_threshold: 1
@@ -75,7 +77,7 @@ services:
       allow_headers:
         - Authorization
         - Content-Type
-      max_age: "86400"  # 24 hours
+      max_age: "86400"
     
     # Alert configuration
     alert:
