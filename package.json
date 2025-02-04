@@ -18,11 +18,9 @@
     "build:server": "tsc server.ts --outDir dist --esModuleInterop --skipLibCheck",
     "prepare": "npm run build && npm run build:server",
     "test:build": "npm run typecheck && npm run build && npm run build:server",
-    "docker:build": "docker build -t allervie-dashboard .",
-    "docker:start": "docker-compose up",
-    "docker:stop": "docker-compose down",
     "clean": "rimraf dist node_modules/.cache",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
+    "postinstall": "npm run prepare"
   },
   "dependencies": {
     "@hookform/resolvers": "3.3.4",
