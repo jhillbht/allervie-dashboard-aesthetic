@@ -5,22 +5,31 @@ services:
     git:
       branch: main
       repo_clone_url: https://github.com/jhillbht/allervie-dashboard.git
-    build_command: npm run build
+    build_command: chmod +x ./scripts/validate-build.sh && ./scripts/validate-build.sh && npm run build
     run_command: npm start
     environment_slug: node-js
-    instance_size_slug: basic-xs
+    instance_size_slug: professional-xs
     instance_count: 1
     http_port: 8080
     health_check:
       http_path: /health
       initial_delay_seconds: 10
       period_seconds: 30
+      timeout_seconds: 5
+      success_threshold: 1
+      failure_threshold: 3
     routes:
       - path: /
     envs:
       - key: NODE_ENV
         scope: RUN_TIME
         value: production
+      - key: NODE_VERSION
+        scope: BUILD_TIME
+        value: 18.19.0
+      - key: NPM_VERSION
+        scope: BUILD_TIME
+        value: 10.2.3
       - key: VITE_SUPABASE_URL
         scope: BUILD_TIME
         type: SECRET
@@ -38,6 +47,39 @@ services:
         operator: GREATER_THAN
         value: 80
         window: 5m
+      - rule: MEM_UTILIZATION
+        operator: GREATER_THAN
+        value: 80
+        window: 5m
+      - rule: HTTP_5XX_ERROR_RATE
+        operator: GREATER_THAN
+        value: 2
+        window: 5m
+    cors:
+      allow_origins:
+        - https://allervie.com
+      allow_methods:
+        - GET
+        - POST
+        - PUT
+        - DELETE
+        - OPTIONS
+      allow_headers:
+        - Authorization
+        - Content-Type
+      max_age: 86400
+    features:
+      - request-logging
+      - access-logging
+      - autoscaling
+    autoscaling:
+      min_replicas: 1
+      max_replicas: 3
+      metrics:
+        - type: cpu_utilization
+          target_percentage: 80
+        - type: memory_utilization
+          target_percentage: 80
 
 static_sites:
   - name: dashboard-static
@@ -57,3 +99,17 @@ databases:
     num_nodes: 1
     size: db-s-dev-database
     version: "12"
+
+functions:
+  - name: dashboard-functions
+    source_dir: functions
+    github:
+      branch: main
+      repo: jhillbht/allervie-dashboard
+    routes:
+      - path: /api
+    alert_policies:
+      - rule: FUNCTION_EXECUTION_TIME
+        operator: GREATER_THAN
+        value: 5000
+        window: 5m
