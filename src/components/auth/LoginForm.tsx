@@ -19,11 +19,19 @@ export function LoginForm() {
     setLoading(true);
 
     try {
-      // For development only - bypass actual authentication
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: "test@example.com",  // Using a dummy email
-        password: "password123",     // Using a dummy password
+      // First try to sign up (this will fail if user exists, which is fine)
+      await supabase.auth.signUp({
+        email: "test@example.com",
+        password: "password123",
       });
+
+      // Then attempt to sign in
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: "test@example.com",
+        password: "password123",
+      });
+
+      if (error) throw error;
 
       toast({
         title: "Welcome!",
@@ -35,7 +43,7 @@ export function LoginForm() {
       console.error("Login error:", error);
       toast({
         title: "Error",
-        description: "An error occurred during login.",
+        description: error.message || "An error occurred during login.",
         variant: "destructive",
       });
     } finally {
