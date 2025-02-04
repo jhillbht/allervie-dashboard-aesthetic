@@ -35,28 +35,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use(compression());
 
 // Serve static files from the dist directory
-app.use(express.static(join(__dirname, 'dist'), {
-  maxAge: '1y',
-  etag: true,
-  lastModified: true
-}));
+app.use(express.static(join(__dirname, 'dist')));
 
 // Health check endpoint
 app.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ 
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime()
-  });
-});
-
-// Error handling middleware
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  console.error('Error:', err.message);
-  res.status(500).json({ 
-    error: 'Internal Server Error',
-    timestamp: new Date().toISOString()
-  });
+  res.status(200).json({ status: 'healthy' });
 });
 
 // Handle SPA routing - serve index.html for all routes
@@ -64,25 +47,12 @@ app.get('*', (req: Request, res: Response) => {
   res.sendFile(join(__dirname, 'dist', 'index.html'));
 });
 
-// Start server with error handling
-const server = app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-}).on('error', (error: NodeJS.ErrnoException) => {
-  if (error.code === 'EACCES') {
-    console.error(`Port ${PORT} requires elevated privileges`);
-  } else if (error.code === 'EADDRINUSE') {
-    console.error(`Port ${PORT} is already in use`);
-  } else {
-    console.error('Server failed to start:', error.message);
-  }
-  process.exit(1);
+// Error handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error('Error:', err.message);
+  res.status(500).json({ error: 'Internal Server Error' });
 });
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  console.log('SIGTERM received. Shutting down gracefully...');
-  server.close(() => {
-    console.log('Server closed');
-    process.exit(0);
-  });
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
