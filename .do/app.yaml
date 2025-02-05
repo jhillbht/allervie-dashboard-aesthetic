@@ -7,18 +7,26 @@ services:
       branch: main
       deploy_on_push: true
     
-    # Build configuration with npm version management
+    # Build configuration with improved dependency handling
     build_command: |
-      echo "Updating npm to version 10.4.0..."
-      npm install -g npm@10.4.0
+      echo "Cleaning npm cache..."
+      npm cache clean --force
+      
+      echo "Removing existing node_modules..."
+      rm -rf node_modules
+      
+      echo "Removing package-lock.json..."
+      rm -f package-lock.json
+      
+      echo "Installing latest npm..."
+      npm install -g npm@latest
+      
       echo "Installing dependencies..."
-      if [ ! -f "package-lock.json" ]; then
-        npm install
-      else
-        npm ci
-      fi
+      npm install
+      
       echo "Building application..."
       npm run build
+    
     run_command: npm start
     
     # Instance configuration
@@ -55,7 +63,7 @@ services:
         scope: BUILD_TIME
         type: SECRET
     
-    # Health check configuration with adjusted timings
+    # Health check configuration
     health_check:
       http_path: /health
       initial_delay_seconds: 30
