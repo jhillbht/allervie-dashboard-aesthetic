@@ -7,24 +7,11 @@ services:
       branch: main
       deploy_on_push: true
     
-    # Build configuration with improved dependency handling
+    # Build configuration with simplified dependency installation
     build_command: |
-      echo "Cleaning npm cache..."
-      npm cache clean --force
-      
-      echo "Removing existing node_modules..."
+      echo "Running build with dependency installation..."
       rm -rf node_modules
-      
-      echo "Removing package-lock.json..."
-      rm -f package-lock.json
-      
-      echo "Installing latest npm..."
-      npm install -g npm@latest
-      
-      echo "Installing dependencies..."
       npm install
-      
-      echo "Building application..."
       npm run build
     
     run_command: npm start
@@ -33,11 +20,6 @@ services:
     instance_count: 1
     instance_size_slug: basic-xxs
     http_port: 8080
-    
-    # Route configuration
-    routes:
-      - path: /
-        preserve_path_prefix: true
     
     # Environment variables
     envs:
@@ -52,45 +34,3 @@ services:
       - key: VITE_SUPABASE_ANON_KEY
         scope: BUILD_TIME
         type: SECRET
-      
-      # Google Analytics configuration
-      - key: VITE_GA_MEASUREMENT_ID
-        scope: BUILD_TIME
-        type: SECRET
-      
-      # Google Ads configuration
-      - key: VITE_GOOGLE_ADS_CONVERSION_IDS
-        scope: BUILD_TIME
-        type: SECRET
-    
-    # Health check configuration
-    health_check:
-      http_path: /health
-      initial_delay_seconds: 30
-      period_seconds: 15
-      timeout_seconds: 5
-      success_threshold: 1
-      failure_threshold: 3
-    
-    # CORS configuration
-    cors:
-      allow_origins:
-        - "https://*.allervie.com"
-      allow_methods:
-        - GET
-        - POST
-        - PUT
-        - DELETE
-        - OPTIONS
-      allow_headers:
-        - Authorization
-        - Content-Type
-      max_age: "86400"
-    
-    # Alert configuration
-    alert:
-      rule: CPU_UTILIZATION
-      value: 90
-      operator: GREATER_THAN
-      window: FIVE_MINUTES
-      period: TWENTY_FOUR_HOURS
