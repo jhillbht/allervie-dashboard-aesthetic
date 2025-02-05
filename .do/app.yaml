@@ -7,11 +7,18 @@ services:
       branch: main
       deploy_on_push: true
     
-    # Build configuration with simplified dependency installation
+    # Build configuration for stable installs
     build_command: |
-      echo "Running build with dependency installation..."
+      # Clean environment
       rm -rf node_modules
-      npm install
+
+      # Copy npmrc for consistent installs
+      cp .npmrc $HOME/.npmrc
+      
+      # Install dependencies using plain npm install
+      npm install --prefer-offline
+
+      # Build with production settings
       npm run build
     
     run_command: npm start
@@ -26,8 +33,11 @@ services:
       - key: NODE_ENV
         scope: RUN_AND_BUILD_TIME
         value: production
+      - key: PORT
+        scope: RUN_AND_BUILD_TIME
+        value: "8080"
       
-      # Supabase configuration
+      # Supabase configuration  
       - key: VITE_SUPABASE_URL
         scope: BUILD_TIME
         type: SECRET
