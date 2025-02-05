@@ -1,0 +1,27 @@
+repository:
+  # See https://docs.github.com/en/rest/reference/repos#update-a-repository for all available settings.
+  delete_branch_on_merge: true
+
+branches:
+  - name: main
+    # https://docs.github.com/en/rest/reference/repos#update-branch-protection
+    protection:
+      # Required status checks to pass before merging
+      required_status_checks:
+        strict: true  # Require branches to be up to date before merging
+        contexts: []  # Status checks that are required (we can add CI checks here later)
+      
+      # Required number of approvals before merging
+      required_pull_request_reviews:
+        required_approving_review_count: 1
+        dismiss_stale_reviews: true  # New commits automatically dismiss old reviews
+        require_code_owner_reviews: false
+      
+      # Additional protection rules
+      enforce_admins: false  # Enforce rules on repository administrators
+      restrictions: null  # No restrictions on who can push to this branch
+      
+      # Advanced settings
+      required_linear_history: true  # Require linear history
+      allow_force_pushes: false  # Prevent force pushing
+      allow_deletions: false  # Prevent branch deletion
