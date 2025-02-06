@@ -34,13 +34,17 @@ const generateMetrics = (region: string, campaignType: string) => {
   const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers];
   const totalMult = regionMult * campaignMult;
 
+  const clicks = Math.floor(randomInRange(1500 * totalMult, 2200 * totalMult, 0));
+  const conversions = randomInRange(120 * totalMult, 190 * totalMult, 2);
+  
   return {
     cost: randomInRange(5000 * totalMult, 9000 * totalMult, 2),
-    conversions: randomInRange(120 * totalMult, 190 * totalMult, 2),
-    clicks: Math.floor(randomInRange(1500 * totalMult, 2200 * totalMult, 0)),
+    conversions,
+    clicks,
     conversionRate: randomInRange(6 * totalMult, 10 * totalMult, 2),
     clickThruRate: randomInRange(0.8 * totalMult, 1.6 * totalMult, 2),
-    costPerConversion: randomInRange(35 * totalMult, 55 * totalMult, 2)
+    costPerConversion: randomInRange(35 * totalMult, 55 * totalMult, 2),
+    impressions: Math.floor(clicks * randomInRange(50, 80, 0))
   };
 };
 
@@ -87,7 +91,11 @@ export function GoogleAdsMetrics() {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-1">
-          <GoogleAdsFunnel />
+          <GoogleAdsFunnel 
+            impressions={metrics.impressions}
+            clicks={metrics.clicks}
+            conversions={Math.floor(metrics.conversions)}
+          />
         </div>
         <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
           <MetricCard
