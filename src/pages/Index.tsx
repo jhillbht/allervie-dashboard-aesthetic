@@ -156,7 +156,7 @@ export default function Index() {
         </div>
 
         {/* Performance Chart */}
-        <PerformanceChart data={data} region={region} campaignType={campaignType} />
+        <PerformanceChart data={data} region={region} campaignType={campaignType} timePeriod={timePeriod} />
       </div>
       <FloatingChatButton />
     </div>
