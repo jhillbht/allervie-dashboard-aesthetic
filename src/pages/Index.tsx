@@ -4,10 +4,6 @@ import { Button } from "@/components/ui/button";
 import { StatsCard } from "@/components/StatsCard";
 import { RefreshCw } from "lucide-react";
 import { PerformanceChart } from "@/components/PerformanceChart";
-import { CustomerFunnels } from "@/components/CustomerFunnels";
-import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
-import { LandingPagesTable } from "@/components/LandingPagesTable";
-import { MarketingSalesAnalysis } from "@/components/MarketingSalesAnalysis";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
 import { GoogleAdsMetrics } from "@/components/GoogleAdsMetrics";
 
@@ -117,18 +113,6 @@ export default function Index() {
 
         {/* Performance Chart */}
         <PerformanceChart data={data} />
-
-        {/* Marketing and Sales Analysis */}
-        <MarketingSalesAnalysis />
-
-        {/* Customer Funnels */}
-        <CustomerFunnels />
-
-        {/* Traffic Sources */}
-        <TrafficSourcesGrid />
-
-        {/* Landing Pages Table */}
-        <LandingPagesTable />
       </div>
       <FloatingChatButton />
     </div>
