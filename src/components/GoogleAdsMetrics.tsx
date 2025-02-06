@@ -1,12 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MetricCard } from './metrics/MetricCard';
 import { GoogleAdsFunnel } from './metrics/GoogleAdsFunnel';
 import { GA4EventsSection } from './metrics/GA4EventsSection';
 
+// Helper function to generate random number within a range
+const randomInRange = (min: number, max: number, decimals: number = 0) => {
+  const rand = Math.random() * (max - min) + min;
+  const power = Math.pow(10, decimals);
+  return Math.floor(rand * power) / power;
+};
+
+// Function to generate metrics based on filters
+const generateMetrics = (region: string, campaignType: string) => {
+  // Base multipliers for different regions and campaign types
+  const regionMultipliers = {
+    all: 1,
+    northeast: 1.2,
+    midwest: 0.9,
+    south: 1.1,
+    west: 1.3
+  };
+
+  const campaignMultipliers = {
+    all: 1,
+    search: 1.15,
+    performance: 1.25,
+    display: 0.85
+  };
+
+  // Get multipliers based on selected filters
+  const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
+  const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers];
+  const totalMult = regionMult * campaignMult;
+
+  return {
+    cost: randomInRange(5000 * totalMult, 9000 * totalMult, 2),
+    conversions: randomInRange(120 * totalMult, 190 * totalMult, 2),
+    clicks: Math.floor(randomInRange(1500 * totalMult, 2200 * totalMult, 0)),
+    conversionRate: randomInRange(6 * totalMult, 10 * totalMult, 2),
+    clickThruRate: randomInRange(0.8 * totalMult, 1.6 * totalMult, 2),
+    costPerConversion: randomInRange(35 * totalMult, 55 * totalMult, 2)
+  };
+};
+
 export function GoogleAdsMetrics() {
   const [region, setRegion] = useState<string>("all");
   const [campaignType, setCampaignType] = useState<string>("all");
+  const [metrics, setMetrics] = useState(generateMetrics("all", "all"));
+
+  // Update metrics when filters change
+  useEffect(() => {
+    setMetrics(generateMetrics(region, campaignType));
+  }, [region, campaignType]);
 
   return (
     <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
@@ -46,36 +92,36 @@ export function GoogleAdsMetrics() {
         <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 gap-4">
           <MetricCard
             label="Cost"
-            value={7020.48}
-            change={{ value: 40, type: 'increase' }}
+            value={metrics.cost}
+            change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             prefix="$"
           />
           <MetricCard
             label="Conversions"
-            value={155.99}
-            change={{ value: 15, type: 'increase' }}
+            value={metrics.conversions}
+            change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
           />
           <MetricCard
             label="Clicks"
-            value={1845}
-            change={{ value: 27, type: 'increase' }}
+            value={metrics.clicks}
+            change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
           />
           <MetricCard
             label="Conversion Rate"
-            value={8.39}
-            change={{ value: 55, type: 'increase' }}
+            value={metrics.conversionRate}
+            change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             suffix="%"
           />
           <MetricCard
             label="Click-Thru Rate"
-            value={1.20}
-            change={{ value: 42, type: 'increase' }}
+            value={metrics.clickThruRate}
+            change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             suffix="%"
           />
           <MetricCard
             label="Cost / Conversion"
-            value={45.00}
-            change={{ value: 24, type: 'increase' }}
+            value={metrics.costPerConversion}
+            change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             prefix="$"
           />
         </div>
