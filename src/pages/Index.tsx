@@ -7,7 +7,6 @@ import { PerformanceChart } from "@/components/PerformanceChart";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
 import { GoogleAdsMetrics } from "@/components/GoogleAdsMetrics";
 
-// Function to generate random number within a range with decimal support
 const randomInRange = (min: number, max: number, decimals: number = 0) => {
   const rand = Math.random() * (max - min) + min;
   const power = Math.pow(10, decimals);
@@ -156,7 +155,7 @@ export default function Index() {
         </div>
 
         {/* Performance Chart */}
-        <PerformanceChart data={data} region={region} campaignType={campaignType} timePeriod={timePeriod} />
+        <PerformanceChart region={region} campaignType={campaignType} timePeriod={timePeriod} />
       </div>
       <FloatingChatButton />
     </div>
