@@ -1,13 +1,28 @@
-import { supabase } from "@/integrations/supabase/client";
-
-interface ToolHouseApiOptions {
+export async function callToolHouseApi({ endpoint, method = 'GET', data }: {
   endpoint: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   data?: any;
-}
-
-export async function callToolHouseApi({ endpoint, method = 'GET', data }: ToolHouseApiOptions) {
+}) {
   try {
+    // For chat endpoints, we don't need authentication
+    if (endpoint.startsWith('/vapi')) {
+      const response = await fetch(`https://api.vapi.ai${endpoint}`, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer sk-80c5433f1eda4faf978585129fc28f2c`
+        },
+        body: method !== 'GET' ? JSON.stringify(data) : undefined,
+      });
+
+      if (!response.ok) {
+        throw new Error(`API call failed with status: ${response.status}`);
+      }
+
+      return await response.json();
+    }
+
+    // For other endpoints that require authentication
     const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
     
     if (sessionError) {
@@ -20,16 +35,13 @@ export async function callToolHouseApi({ endpoint, method = 'GET', data }: ToolH
       throw new Error('No access token available');
     }
 
-    // Ensure endpoint starts with a forward slash
-    const formattedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    
     const { data: response, error } = await supabase.functions.invoke('toolhouse-api', {
       body: { 
-        endpoint: formattedEndpoint,
+        endpoint: endpoint.startsWith('/') ? endpoint : `/${endpoint}`,
         method, 
         data,
-        model: 'deepseek', // Specify that we want to use Deepseek
-        apiKey: 'sk-80c5433f1eda4faf978585129fc28f2c' // Use the Deepseek API key
+        model: 'deepseek',
+        apiKey: 'sk-80c5433f1eda4faf978585129fc28f2c'
       },
       headers: {
         Authorization: `Bearer ${sessionData.session.access_token}`
