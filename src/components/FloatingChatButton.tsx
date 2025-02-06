@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, Send, X } from "lucide-react";
+import { MessageCircle, Send, X, ChartBar, Calendar, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { callToolHouseApi } from "@/utils/toolhouse";
 
@@ -11,11 +11,35 @@ interface ChatMessage {
   content: string;
 }
 
+interface QuickPrompt {
+  icon: React.ReactNode;
+  text: string;
+  question: string;
+}
+
 export function FloatingChatButton() {
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const quickPrompts: QuickPrompt[] = [
+    {
+      icon: <ChartBar className="h-4 w-4" />,
+      text: "Performance Analysis",
+      question: "What's the highest performing marketing channel based on revenue?"
+    },
+    {
+      icon: <Calendar className="h-4 w-4" />,
+      text: "Time Comparison",
+      question: "How does today's conversion rate compare to yesterday?"
+    },
+    {
+      icon: <HelpCircle className="h-4 w-4" />,
+      text: "Insights",
+      question: "What are the key insights from the Google Ads performance data?"
+    }
+  ];
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,6 +73,10 @@ export function FloatingChatButton() {
     }
   };
 
+  const handleQuickPrompt = (question: string) => {
+    setMessage(question);
+  };
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {isOpen ? (
@@ -64,6 +92,25 @@ export function FloatingChatButton() {
             </Button>
           </div>
           
+          {messages.length === 0 && (
+            <div className="grid grid-cols-1 gap-2 mb-4">
+              {quickPrompts.map((prompt, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  className="flex items-center justify-start gap-2 h-auto py-3 px-4"
+                  onClick={() => handleQuickPrompt(prompt.question)}
+                >
+                  {prompt.icon}
+                  <div className="flex flex-col items-start">
+                    <span className="text-sm font-medium">{prompt.text}</span>
+                    <span className="text-xs text-muted-foreground">{prompt.question}</span>
+                  </div>
+                </Button>
+              ))}
+            </div>
+          )}
+
           <div className="flex-1 overflow-y-auto space-y-4 mb-4">
             {messages.map((msg, index) => (
               <div
