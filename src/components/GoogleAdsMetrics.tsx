@@ -135,7 +135,7 @@ export function GoogleAdsMetrics() {
         </div>
       </div>
 
-      <GA4EventsSection />
+      <GA4EventsSection region={region} campaignType={campaignType} />
     </div>
   );
 }
