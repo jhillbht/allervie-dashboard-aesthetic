@@ -9,6 +9,7 @@ import { TrafficSourcesGrid } from "@/components/TrafficSourcesGrid";
 import { LandingPagesTable } from "@/components/LandingPagesTable";
 import { MarketingSalesAnalysis } from "@/components/MarketingSalesAnalysis";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
+import { GoogleAdsMetrics } from "@/components/GoogleAdsMetrics";
 
 // Function to generate random number within a range
 const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
@@ -70,6 +71,9 @@ export default function Index() {
             </Button>
           </div>
         </div>
+
+        {/* Google Ads Metrics */}
+        <GoogleAdsMetrics />
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
