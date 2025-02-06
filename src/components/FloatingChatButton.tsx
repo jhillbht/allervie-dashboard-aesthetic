@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { MessageCircle, Send, X, ChartBar, Calendar, HelpCircle } from "lucide-react";
+import { MessageCircle, Send, X, ChartBar, Calendar, HelpCircle, History } from "lucide-react";
 import { toast } from "sonner";
 import { callToolHouseApi } from "@/utils/toolhouse";
 
@@ -22,6 +22,8 @@ export function FloatingChatButton() {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [messageHistory, setMessageHistory] = useState<ChatMessage[]>([]);
 
   const quickPrompts: QuickPrompt[] = [
     {
@@ -63,7 +65,10 @@ export function FloatingChatButton() {
       });
 
       if (response.content) {
-        setMessages(prev => [...prev, { role: 'assistant', content: response.content }]);
+        const assistantMessage = { role: 'assistant', content: response.content };
+        setMessages(prev => [...prev, assistantMessage]);
+        // Add to history
+        setMessageHistory(prev => [...prev, newMessage, assistantMessage]);
       }
     } catch (error) {
       console.error('Error sending message:', error);
@@ -77,22 +82,50 @@ export function FloatingChatButton() {
     setMessage(question);
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    // Save current messages to history before clearing
+    if (messages.length > 0) {
+      setMessageHistory(prev => [...prev, ...messages]);
+    }
+    // Reset messages when closing
+    setMessages([]);
+    setShowHistory(false);
+  };
+
+  const handleHistoryClick = () => {
+    setShowHistory(!showHistory);
+    setMessages(showHistory ? [] : messageHistory);
+  };
+
   return (
     <div className="fixed bottom-4 right-4 z-50">
       {isOpen ? (
         <Card className="w-[350px] h-[500px] flex flex-col p-4 shadow-lg">
           <div className="flex justify-between items-center mb-4">
             <h3 className="font-semibold">Chat Assistant</h3>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
+            <div className="flex gap-2">
+              {messageHistory.length > 0 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleHistoryClick}
+                  className="hover:bg-gray-100"
+                >
+                  <History className="h-4 w-4" />
+                </Button>
+              )}
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleClose}
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
           
-          {messages.length === 0 && (
+          {messages.length === 0 && !showHistory && (
             <div className="grid grid-cols-1 gap-2 mb-4">
               {quickPrompts.map((prompt, index) => (
                 <Button
