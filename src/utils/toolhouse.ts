@@ -27,7 +27,9 @@ export async function callToolHouseApi({ endpoint, method = 'GET', data }: ToolH
       body: { 
         endpoint: formattedEndpoint,
         method, 
-        data 
+        data,
+        model: 'deepseek', // Specify that we want to use Deepseek
+        apiKey: 'sk-80c5433f1eda4faf978585129fc28f2c' // Use the Deepseek API key
       },
       headers: {
         Authorization: `Bearer ${sessionData.session.access_token}`
