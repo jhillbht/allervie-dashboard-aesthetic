@@ -4,6 +4,7 @@ import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { DatePickerWithRange } from "@/components/ui/date-range-picker";
 import { addDays } from "date-fns";
+import { DateRange as DayPickerDateRange } from 'react-day-picker';
 
 interface MetricCardProps {
   label: string;
@@ -16,10 +17,7 @@ interface MetricCardProps {
   suffix?: string;
 }
 
-interface DateRange {
-  from: Date;
-  to: Date;
-}
+interface DateRange extends Required<DayPickerDateRange> {}
 
 const MetricCard = ({ label, value, change, prefix = '', suffix = '' }: MetricCardProps) => (
   <Card className="p-4 bg-card/50 backdrop-blur-sm border border-border/50">
@@ -69,6 +67,18 @@ export function GoogleAdsMetrics() {
     to: addDays(new Date(), -31),
   });
 
+  const handleDateChange = (newDate: DayPickerDateRange | undefined) => {
+    if (newDate?.from && newDate?.to) {
+      setDate({ from: newDate.from, to: newDate.to });
+    }
+  };
+
+  const handleCompareDateChange = (newDate: DayPickerDateRange | undefined) => {
+    if (newDate?.from && newDate?.to) {
+      setCompareDate({ from: newDate.from, to: newDate.to });
+    }
+  };
+
   return (
     <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -98,8 +108,8 @@ export function GoogleAdsMetrics() {
             </SelectContent>
           </Select>
           <div className="flex gap-2">
-            <DatePickerWithRange date={date} setDate={setDate} />
-            <DatePickerWithRange date={compareDate} setDate={setCompareDate} />
+            <DatePickerWithRange date={date} setDate={handleDateChange} />
+            <DatePickerWithRange date={compareDate} setDate={handleCompareDateChange} />
           </div>
         </div>
       </div>
