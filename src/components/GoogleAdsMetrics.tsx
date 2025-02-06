@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { DatePickerWithRange } from "@/components/ui/date-range-picker";
+import { addDays } from "date-fns";
 
 interface MetricCardProps {
   label: string;
@@ -11,6 +14,11 @@ interface MetricCardProps {
   };
   prefix?: string;
   suffix?: string;
+}
+
+interface DateRange {
+  from: Date;
+  to: Date;
 }
 
 const MetricCard = ({ label, value, change, prefix = '', suffix = '' }: MetricCardProps) => (
@@ -50,9 +58,52 @@ const GoogleAdsFunnel = () => (
 );
 
 export function GoogleAdsMetrics() {
+  const [region, setRegion] = useState<string>("all");
+  const [campaignType, setCampaignType] = useState<string>("all");
+  const [date, setDate] = useState<DateRange>({
+    from: addDays(new Date(), -30),
+    to: new Date(),
+  });
+  const [compareDate, setCompareDate] = useState<DateRange>({
+    from: addDays(new Date(), -60),
+    to: addDays(new Date(), -31),
+  });
+
   return (
     <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
-      <h2 className="text-lg font-medium mb-6">Google Ads Performance</h2>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+        <h2 className="text-lg font-medium">Google Ads Performance</h2>
+        <div className="flex flex-wrap gap-4">
+          <Select value={region} onValueChange={setRegion}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select region" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Regions</SelectItem>
+              <SelectItem value="northeast">Northeast</SelectItem>
+              <SelectItem value="midwest">Midwest</SelectItem>
+              <SelectItem value="south">South</SelectItem>
+              <SelectItem value="west">West</SelectItem>
+            </SelectContent>
+          </Select>
+          <Select value={campaignType} onValueChange={setCampaignType}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Campaign type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Campaigns</SelectItem>
+              <SelectItem value="search">Search</SelectItem>
+              <SelectItem value="performance">Performance Max</SelectItem>
+              <SelectItem value="display">Display</SelectItem>
+            </SelectContent>
+          </Select>
+          <div className="flex gap-2">
+            <DatePickerWithRange date={date} setDate={setDate} />
+            <DatePickerWithRange date={compareDate} setDate={setCompareDate} />
+          </div>
+        </div>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-1">
           <GoogleAdsFunnel />
