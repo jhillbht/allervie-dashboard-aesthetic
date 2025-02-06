@@ -65,7 +65,7 @@ export function FloatingChatButton() {
       });
 
       if (response.content) {
-        const assistantMessage = { role: 'assistant', content: response.content };
+        const assistantMessage: ChatMessage = { role: 'assistant', content: response.content };
         setMessages(prev => [...prev, assistantMessage]);
         // Add to history
         setMessageHistory(prev => [...prev, newMessage, assistantMessage]);
