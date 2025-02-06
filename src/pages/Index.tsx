@@ -7,30 +7,69 @@ import { PerformanceChart } from "@/components/PerformanceChart";
 import { FloatingChatButton } from "@/components/FloatingChatButton";
 import { GoogleAdsMetrics } from "@/components/GoogleAdsMetrics";
 
-// Function to generate random number within a range
-const randomInRange = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+// Function to generate random number within a range with decimal support
+const randomInRange = (min: number, max: number, decimals: number = 0) => {
+  const rand = Math.random() * (max - min) + min;
+  const power = Math.pow(10, decimals);
+  return Math.floor(rand * power) / power;
+};
 
-// Function to generate fresh demo data
-const generateDemoData = () => [
-  { name: '11 AM', current: randomInRange(500, 1000), previous: randomInRange(400, 900) },
-  { name: '1 PM', current: randomInRange(500, 1000), previous: randomInRange(400, 900), campaign: 'Email Campaign 3' },
-  { name: '3 PM', current: randomInRange(1000, 1500), previous: randomInRange(800, 1200), campaign: 'TikTok Video 83' },
-  { name: '5 PM', current: randomInRange(600, 1000), previous: randomInRange(500, 900) },
-  { name: '7 PM', current: randomInRange(800, 1200), previous: randomInRange(700, 1100), campaign: 'YouTube Video 7' },
-  { name: '9 PM', current: randomInRange(400, 800), previous: randomInRange(300, 700) },
-];
+// Function to generate time labels based on period
+const getTimeLabels = (period: string) => {
+  switch (period) {
+    case 'today':
+      return ['11 AM', '1 PM', '3 PM', '5 PM', '7 PM', '9 PM'];
+    case 'yesterday':
+      return ['10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'];
+    case 'week':
+      return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    case 'month':
+      return ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    default:
+      return ['11 AM', '1 PM', '3 PM', '5 PM', '7 PM', '9 PM'];
+  }
+};
+
+// Function to generate fresh demo data based on period
+const generateDemoData = (period: string) => {
+  const timeLabels = getTimeLabels(period);
+  const baseMultiplier = period === 'month' ? 4 : period === 'week' ? 1.5 : 1;
+  
+  return timeLabels.map(name => {
+    // Generate more realistic ranges based on time period
+    const currentBase = randomInRange(500 * baseMultiplier, 1500 * baseMultiplier, 0);
+    const previousBase = currentBase * randomInRange(0.8, 1.2, 2);
+    
+    // Add campaign names for specific points
+    const campaigns = [
+      'Email Campaign 3',
+      'TikTok Video 83',
+      'YouTube Video 7',
+      'Instagram Story 12',
+      'Facebook Ad 45'
+    ];
+    
+    const shouldHaveCampaign = Math.random() > 0.6;
+    return {
+      name,
+      current: currentBase,
+      previous: previousBase,
+      ...(shouldHaveCampaign && { campaign: campaigns[Math.floor(Math.random() * campaigns.length)] })
+    };
+  });
+};
 
 export default function Index() {
   const [timePeriod, setTimePeriod] = useState('today');
-  const [data, setData] = useState(generateDemoData());
+  const [data, setData] = useState(() => generateDemoData('today'));
 
   const refreshData = useCallback(() => {
-    setData(generateDemoData());
-  }, []);
+    setData(generateDemoData(timePeriod));
+  }, [timePeriod]);
 
   const handlePeriodChange = (value: string) => {
     setTimePeriod(value);
-    refreshData();
+    setData(generateDemoData(value));
   };
 
   return (
@@ -75,38 +114,38 @@ export default function Index() {
         <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
           <StatsCard
             title="Conversion Rate"
-            value="1.3%"
-            change={{ value: 8.1, type: "increase" }}
+            value={`${randomInRange(1, 10, 2)}%`}
+            change={{ value: randomInRange(1, 60, 1), type: Math.random() > 0.5 ? "increase" : "decrease" }}
             subtitle="vs Yesterday"
           />
           <StatsCard
             title="Revenue"
-            value="$39,827"
-            change={{ value: 12.6, type: "decrease" }}
+            value={`$${randomInRange(10000, 50000, 0).toLocaleString()}`}
+            change={{ value: randomInRange(1, 60, 1), type: Math.random() > 0.5 ? "increase" : "decrease" }}
             subtitle="vs Yesterday"
           />
           <StatsCard
             title="Sessions"
-            value="49,062"
-            change={{ value: 8.2, type: "increase" }}
+            value={randomInRange(40000, 60000, 0).toLocaleString()}
+            change={{ value: randomInRange(1, 60, 1), type: Math.random() > 0.5 ? "increase" : "decrease" }}
             subtitle="vs Yesterday"
           />
           <StatsCard
             title="Engagement"
-            value="37.5%"
-            change={{ value: 3.1, type: "increase" }}
+            value={`${randomInRange(20, 60, 1)}%`}
+            change={{ value: randomInRange(1, 60, 1), type: Math.random() > 0.5 ? "increase" : "decrease" }}
             subtitle="vs Yesterday"
           />
           <StatsCard
             title="Bounce Rate"
-            value="33.2%"
-            change={{ value: 1.9, type: "increase" }}
+            value={`${randomInRange(20, 45, 1)}%`}
+            change={{ value: randomInRange(1, 60, 1), type: Math.random() > 0.5 ? "increase" : "decrease" }}
             subtitle="vs Yesterday"
           />
           <StatsCard
             title="Avg Order"
-            value="$89"
-            change={{ value: 3.8, type: "decrease" }}
+            value={`$${randomInRange(50, 150, 0)}`}
+            change={{ value: randomInRange(1, 60, 1), type: Math.random() > 0.5 ? "increase" : "decrease" }}
             subtitle="vs Yesterday"
           />
         </div>
