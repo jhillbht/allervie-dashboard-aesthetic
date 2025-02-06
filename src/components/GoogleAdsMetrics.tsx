@@ -2,9 +2,6 @@ import React, { useState } from 'react';
 import { Card } from "@/components/ui/card";
 import { ArrowUpIcon, ArrowDownIcon } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { DatePickerWithRange } from "@/components/ui/date-range-picker";
-import { addDays } from "date-fns";
-import { DateRange as DayPickerDateRange } from 'react-day-picker';
 
 interface MetricCardProps {
   label: string;
@@ -16,8 +13,6 @@ interface MetricCardProps {
   prefix?: string;
   suffix?: string;
 }
-
-interface DateRange extends Required<DayPickerDateRange> {}
 
 const MetricCard = ({ label, value, change, prefix = '', suffix = '' }: MetricCardProps) => (
   <Card className="p-4 bg-card/50 backdrop-blur-sm border border-border/50">
@@ -98,26 +93,6 @@ const GA4EventsSection = () => (
 export function GoogleAdsMetrics() {
   const [region, setRegion] = useState<string>("all");
   const [campaignType, setCampaignType] = useState<string>("all");
-  const [date, setDate] = useState<DateRange>({
-    from: addDays(new Date(), -30),
-    to: new Date(),
-  });
-  const [compareDate, setCompareDate] = useState<DateRange>({
-    from: addDays(new Date(), -60),
-    to: addDays(new Date(), -31),
-  });
-
-  const handleDateChange = (newDate: DayPickerDateRange | undefined) => {
-    if (newDate?.from && newDate?.to) {
-      setDate({ from: newDate.from, to: newDate.to });
-    }
-  };
-
-  const handleCompareDateChange = (newDate: DayPickerDateRange | undefined) => {
-    if (newDate?.from && newDate?.to) {
-      setCompareDate({ from: newDate.from, to: newDate.to });
-    }
-  };
 
   return (
     <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
@@ -147,10 +122,6 @@ export function GoogleAdsMetrics() {
               <SelectItem value="display">Display</SelectItem>
             </SelectContent>
           </Select>
-          <div className="flex gap-2">
-            <DatePickerWithRange date={date} setDate={handleDateChange} />
-            <DatePickerWithRange date={compareDate} setDate={handleCompareDateChange} />
-          </div>
         </div>
       </div>
       
