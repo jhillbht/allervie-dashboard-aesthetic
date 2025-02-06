@@ -11,12 +11,58 @@ import { toast } from "sonner";
 
 interface PerformanceChartProps {
   data: ChartDataPoint[];
+  region?: string;
+  campaignType?: string;
 }
 
-export function PerformanceChart({ data }: PerformanceChartProps) {
+// Helper function to generate random number within a range
+const randomInRange = (min: number, max: number, decimals: number = 0) => {
+  const rand = Math.random() * (max - min) + min;
+  const power = Math.pow(10, decimals);
+  return Math.floor(rand * power) / power;
+};
+
+// Function to generate chart data based on filters
+const generateChartData = (region: string, campaignType: string) => {
+  const regionMultipliers = {
+    all: 1,
+    northeast: 1.2,
+    midwest: 0.9,
+    south: 1.1,
+    west: 1.3
+  };
+
+  const campaignMultipliers = {
+    all: 1,
+    search: 1.15,
+    performance: 1.25,
+    display: 0.85
+  };
+
+  const regionMult = regionMultipliers[region as keyof typeof regionMultipliers] || 1;
+  const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers] || 1;
+  const totalMult = regionMult * campaignMult;
+
+  const timePoints = ['10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'];
+  return timePoints.map(name => ({
+    name,
+    current: randomInRange(500 * totalMult, 1500 * totalMult, 0),
+    previous: randomInRange(400 * totalMult, 1600 * totalMult, 0),
+    ...(Math.random() > 0.7 && {
+      campaign: ['Email Campaign 3', 'Social Media Push', 'Display Ads'][Math.floor(Math.random() * 3)]
+    })
+  }));
+};
+
+export function PerformanceChart({ region = 'all', campaignType = 'all' }: PerformanceChartProps) {
   const [isLandscape, setIsLandscape] = React.useState(false);
   const isMobile = useIsMobile();
   const chartRef = React.useRef<HTMLDivElement>(null);
+  const [chartData, setChartData] = React.useState(() => generateChartData(region, campaignType));
+
+  React.useEffect(() => {
+    setChartData(generateChartData(region, campaignType));
+  }, [region, campaignType]);
 
   React.useEffect(() => {
     const handleOrientationChange = () => {
@@ -78,7 +124,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
       <div ref={chartRef} className={`${isLandscape ? 'h-screen' : 'h-[400px]'} w-full`}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
-            data={data}
+            data={chartData}
             margin={getChartMargins(isLandscape, isMobile)}
           >
             <CartesianGrid strokeDasharray="3 3" stroke={CHART_COLORS.border} />
@@ -128,7 +174,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
               dot={false}
             />
             <CampaignLabels
-              data={data}
+              data={chartData}
               isMobile={isMobile}
               isLandscape={isLandscape}
             />

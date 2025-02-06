@@ -61,6 +61,8 @@ const generateDemoData = (period: string) => {
 
 export default function Index() {
   const [timePeriod, setTimePeriod] = useState('today');
+  const [region, setRegion] = useState('all');
+  const [campaignType, setCampaignType] = useState('all');
   const [data, setData] = useState(() => generateDemoData('today'));
 
   const refreshData = useCallback(() => {
@@ -151,7 +153,7 @@ export default function Index() {
         </div>
 
         {/* Performance Chart */}
-        <PerformanceChart data={data} />
+        <PerformanceChart data={data} region={region} campaignType={campaignType} />
       </div>
       <FloatingChatButton />
     </div>
