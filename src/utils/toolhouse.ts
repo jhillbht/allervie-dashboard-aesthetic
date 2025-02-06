@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export async function callToolHouseApi({ endpoint, method = 'GET', data }: {
   endpoint: string;
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
