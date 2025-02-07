@@ -15,25 +15,25 @@ const randomInRange = (min: number, max: number, decimals: number = 0) => {
 const generateMetrics = (region: string, campaignType: string, timePeriod: string = 'today') => {
   // Base multipliers for different regions and campaign types
   const regionMultipliers = {
-    all: 1,
-    northeast: 1.2,
-    midwest: 0.9,
-    south: 1.1,
-    west: 1.3
+    all: 2.5, // Highest multiplier for all regions combined
+    northeast: 0.8, // Populous region with high economic activity
+    midwest: 0.6, // Moderate market size
+    south: 0.7, // Growing market
+    west: 0.9 // Large market with tech hubs
   };
 
   const campaignMultipliers = {
-    all: 1,
-    search: 1.15,
-    performance: 1.25,
-    display: 0.85
+    all: 2.0, // Highest multiplier for all campaigns combined
+    search: 0.8, // Strong performance channel
+    performance: 0.7, // Growing channel
+    display: 0.5 // Lower conversion but wider reach
   };
 
   const timeMultipliers = {
     today: 1,
-    yesterday: 0.95,
-    week: 1.2,
-    month: 1.5
+    yesterday: 0.95, // Slightly lower than today
+    week: 7, // Approximately 7x daily average
+    month: 28 // Approximately 28x daily average
   };
 
   // Get multipliers based on selected filters
@@ -42,16 +42,25 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
   const totalMult = regionMult * campaignMult * timeMult;
 
-  const clicks = Math.floor(randomInRange(1500 * totalMult, 2200 * totalMult, 0));
-  const conversions = randomInRange(120 * totalMult, 190 * totalMult, 2);
+  // Base metrics for a typical day (before multipliers)
+  const baseClicks = randomInRange(800, 1200, 0);
+  const baseConversionRate = randomInRange(2.5, 4.5, 2);
+  const baseCostPerClick = randomInRange(1.5, 2.5, 2);
+  
+  // Calculate derived metrics
+  const clicks = Math.floor(baseClicks * totalMult);
+  const conversionRate = baseConversionRate * (campaignMult * 1.2); // Adjust conversion rate based on campaign type
+  const conversions = Math.floor((clicks * conversionRate) / 100);
+  const costPerClick = baseCostPerClick * (1 + (regionMult * 0.2)); // Adjust CPC based on region
+  const cost = clicks * costPerClick;
   
   return {
-    cost: randomInRange(5000 * totalMult, 9000 * totalMult, 2),
+    cost,
     conversions,
     clicks,
-    conversionRate: randomInRange(6 * totalMult, 10 * totalMult, 2),
+    conversionRate,
     clickThruRate: randomInRange(0.8 * totalMult, 1.6 * totalMult, 2),
-    costPerConversion: randomInRange(35 * totalMult, 55 * totalMult, 2),
+    costPerConversion: cost / (conversions || 1),
     impressions: Math.floor(clicks * randomInRange(50, 80, 0))
   };
 };
