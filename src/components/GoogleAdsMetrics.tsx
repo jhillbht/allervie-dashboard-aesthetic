@@ -4,64 +4,60 @@ import { MetricCard } from './metrics/MetricCard';
 import { GoogleAdsFunnel } from './metrics/GoogleAdsFunnel';
 import { GA4EventsSection } from './metrics/GA4EventsSection';
 
-// Helper function to generate random number within a range
 const randomInRange = (min: number, max: number, decimals: number = 0) => {
   const rand = Math.random() * (max - min) + min;
   const power = Math.pow(10, decimals);
   return Math.floor(rand * power) / power;
 };
 
-// Function to generate metrics based on filters
 const generateMetrics = (region: string, campaignType: string, timePeriod: string = 'today') => {
-  // Base multipliers for different regions and campaign types
   const regionMultipliers = {
-    all: 2.5, // Highest multiplier for all regions combined
-    northeast: 0.8, // Populous region with high economic activity
-    midwest: 0.6, // Moderate market size
-    south: 0.7, // Growing market
-    west: 0.9 // Large market with tech hubs
+    all: 2.5,
+    northeast: 0.8,
+    midwest: 0.6,
+    south: 0.7,
+    west: 0.9
   };
 
   const campaignMultipliers = {
-    all: 2.0, // Highest multiplier for all campaigns combined
-    search: 0.8, // Strong performance channel
-    performance: 0.7, // Growing channel
-    display: 0.5 // Lower conversion but wider reach
+    all: 2.0,
+    search: 0.8,
+    performance: 0.7,
+    display: 0.5
   };
 
   const timeMultipliers = {
     today: 1,
-    yesterday: 0.95, // Slightly lower than today
-    week: 7, // Approximately 7x daily average
-    month: 28 // Approximately 28x daily average
+    yesterday: 0.95,
+    week: 7,
+    month: 28
   };
 
-  // Get multipliers based on selected filters
   const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
   const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers];
   const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
   const totalMult = regionMult * campaignMult * timeMult;
 
-  // Base metrics for a typical day (before multipliers)
-  const baseClicks = randomInRange(800, 1200, 0);
-  const baseConversionRate = randomInRange(2.5, 4.5, 2);
-  const baseCostPerClick = randomInRange(1.5, 2.5, 2);
+  // Updated base metrics to match the screenshot scale
+  const baseClicks = randomInRange(20000, 25000, 0); // Around 23.3K
+  const baseConversionRate = randomInRange(8, 12, 2); // To achieve ~2.53K conversions
+  const baseCostPerConversion = randomInRange(30, 40, 2); // Around $34.43
   
   // Calculate derived metrics
   const clicks = Math.floor(baseClicks * totalMult);
-  const conversionRate = baseConversionRate * (campaignMult * 1.2); // Adjust conversion rate based on campaign type
+  const conversionRate = baseConversionRate * (campaignMult * 1.2);
   const conversions = Math.floor((clicks * conversionRate) / 100);
-  const costPerClick = baseCostPerClick * (1 + (regionMult * 0.2)); // Adjust CPC based on region
-  const cost = clicks * costPerClick;
+  const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.2));
+  const cost = conversions * costPerConversion;
   
   return {
     cost,
     conversions,
     clicks,
     conversionRate,
-    clickThruRate: randomInRange(0.8 * totalMult, 1.6 * totalMult, 2),
-    costPerConversion: cost / (conversions || 1),
-    impressions: Math.floor(clicks * randomInRange(50, 80, 0))
+    clickThruRate: randomInRange(2.5 * totalMult, 4.0 * totalMult, 2),
+    costPerConversion,
+    impressions: Math.floor(clicks * randomInRange(15, 20, 0)) // Adjusted for more realistic CTR
   };
 };
 
