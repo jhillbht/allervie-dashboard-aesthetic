@@ -1,0 +1,31 @@
+name: allervie-dashboard-2
+region: sgp
+services:
+  - name: dashboard
+    instance_size_slug: basic-xs
+    instance_count: 1
+    github:
+      repo: jhillbht/allervie-dashboard-aesthetic
+      branch: main
+      deploy_on_push: true
+    dockerfile_path: Dockerfile
+    http_port: 8080
+    health_check:
+      http_path: /health
+      port: 8080
+      initial_delay_seconds: 10
+      period_seconds: 5
+      timeout_seconds: 2
+      success_threshold: 1
+      failure_threshold: 3
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: VITE_SUPABASE_URL
+        scope: RUN_TIME
+        type: SECRET
+        value: ${VITE_SUPABASE_URL}
+      - key: VITE_SUPABASE_ANON_KEY
+        scope: RUN_TIME
+        type: SECRET
+        value: ${VITE_SUPABASE_ANON_KEY}
