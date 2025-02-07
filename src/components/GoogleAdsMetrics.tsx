@@ -26,11 +26,12 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
     display: 0.5
   };
 
+  // Updated time period multipliers to reflect 30-day scale
   const timeMultipliers = {
-    today: 1,
-    yesterday: 0.95,
-    week: 7,
-    month: 28
+    today: 1/30, // One day's worth of the monthly total
+    yesterday: 0.95/30, // Slightly less than today
+    week: 7/30, // One week's worth of the monthly total
+    month: 1 // Full monthly data (baseline)
   };
 
   const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
@@ -38,26 +39,30 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
   const totalMult = regionMult * campaignMult * timeMult;
 
-  // Updated base metrics to match the screenshot scale
-  const baseClicks = randomInRange(20000, 25000, 0); // Around 23.3K
-  const baseConversionRate = randomInRange(8, 12, 2); // To achieve ~2.53K conversions
-  const baseCostPerConversion = randomInRange(30, 40, 2); // Around $34.43
+  // Updated base metrics to match the 30-day screenshot scale
+  const baseClicks = randomInRange(22000, 24000, 0); // Around 23.3K for the month
+  const baseConversions = randomInRange(2400, 2600, 0); // Around 2.53K for the month
+  const baseCostPerConversion = randomInRange(33, 36, 2); // Around $34.43
   
-  // Calculate derived metrics
+  // Calculate metrics with time period adjustment
   const clicks = Math.floor(baseClicks * totalMult);
-  const conversionRate = baseConversionRate * (campaignMult * 1.2);
-  const conversions = Math.floor((clicks * conversionRate) / 100);
+  const conversions = Math.floor(baseConversions * totalMult);
   const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.2));
   const cost = conversions * costPerConversion;
   
+  // Calculate derived metrics
+  const impressions = Math.floor(clicks * randomInRange(15, 20, 0)); // Realistic CTR
+  const clickThruRate = (clicks / impressions) * 100;
+  const conversionRate = (conversions / clicks) * 100;
+
   return {
     cost,
     conversions,
     clicks,
     conversionRate,
-    clickThruRate: randomInRange(2.5 * totalMult, 4.0 * totalMult, 2),
+    clickThruRate,
     costPerConversion,
-    impressions: Math.floor(clicks * randomInRange(15, 20, 0)) // Adjusted for more realistic CTR
+    impressions
   };
 };
 
