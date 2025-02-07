@@ -39,21 +39,21 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
   const totalMult = regionMult * campaignMult * timeMult;
 
-  // Updated base metrics to match the 30-day screenshot scale
-  const baseClicks = randomInRange(22000, 24000, 0); // Around 23.3K for the month
-  const baseConversions = randomInRange(2400, 2600, 0); // Around 2.53K for the month
+  // Base metrics calibrated to match the screenshot's 30-day values
+  const baseImpressions = randomInRange(1200000, 1300000, 0); // Around 1.25M impressions
+  const baseCtr = randomInRange(1.8, 1.95, 2); // Around 1.87% CTR
+  const baseClicks = Math.floor((baseImpressions * baseCtr) / 100); // Derived from impressions and CTR
   const baseCostPerConversion = randomInRange(33, 36, 2); // Around $34.43
+  const baseConversionRate = randomInRange(1.7, 2.0, 2); // Adjusted for more realistic CVR
   
   // Calculate metrics with time period adjustment
-  const clicks = Math.floor(baseClicks * totalMult);
-  const conversions = Math.floor(baseConversions * totalMult);
-  const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.2));
-  const cost = conversions * costPerConversion;
-  
-  // Calculate derived metrics
-  const impressions = Math.floor(clicks * randomInRange(15, 20, 0)); // Realistic CTR
-  const clickThruRate = (clicks / impressions) * 100;
-  const conversionRate = (conversions / clicks) * 100;
+  const impressions = Math.floor(baseImpressions * totalMult);
+  const clickThruRate = baseCtr * (1 + (regionMult * 0.1));
+  const clicks = Math.floor((impressions * clickThruRate) / 100);
+  const conversionRate = baseConversionRate * (1 + (campaignMult * 0.1));
+  const conversions = Math.floor((clicks * conversionRate) / 100);
+  const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.1));
+  const cost = Math.floor(conversions * costPerConversion);
 
   return {
     cost,
