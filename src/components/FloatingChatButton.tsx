@@ -54,7 +54,7 @@ export function FloatingChatButton() {
       setMessage('');
 
       const response = await callToolHouseApi({
-        endpoint: '/vapi/chat',
+        endpoint: '/v1/chat',  // Updated endpoint from /vapi/chat to /v1/chat
         method: 'POST',
         data: {
           messages: [...messages, newMessage].map(m => ({
