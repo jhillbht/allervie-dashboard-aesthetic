@@ -12,7 +12,7 @@ APP_DIR="/Users/supabowl/Downloads/DO app project/Allervie Aesthetic Dashboard"
 GITHUB_REPO="jhillbht/allervie-dashboard-aesthetic"
 DOCKER_REGISTRY="registry.digitalocean.com"
 IMAGE_NAME="allerviedash/dashboard"
-APP_ID="7dbb3ee2-1c15-4ee2-92c9-cc33f82e7136"
+APP_ID="47fd3c68-91c9-4556-bc83-ddb7b9f4cdf5"  # Updated to the correct app ID
 
 # Function to print section headers
 print_section() {
@@ -57,11 +57,11 @@ sync_with_github() {
     
     # Create app spec file
     cat > "$APP_DIR/.do/app.yaml" << EOL
-name: allervie-dashboard-2
+name: allervie-dashboard
 region: sgp
 services:
   - name: dashboard
-    instance_size_slug: basic-xs
+    instance_size_slug: basic
     instance_count: 1
     github:
       repo: jhillbht/allervie-dashboard-aesthetic

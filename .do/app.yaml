@@ -1,8 +1,8 @@
-name: allervie-dashboard-2
+name: allervie-dashboard
 region: sgp
 services:
   - name: dashboard
-    instance_size_slug: basic-xs
+    instance_size_slug: basic
     instance_count: 1
     github:
       repo: jhillbht/allervie-dashboard-aesthetic
