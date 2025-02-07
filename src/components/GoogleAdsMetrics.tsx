@@ -12,7 +12,7 @@ const randomInRange = (min: number, max: number, decimals: number = 0) => {
 };
 
 // Function to generate metrics based on filters
-const generateMetrics = (region: string, campaignType: string) => {
+const generateMetrics = (region: string, campaignType: string, timePeriod: string = 'today') => {
   // Base multipliers for different regions and campaign types
   const regionMultipliers = {
     all: 1,
@@ -29,10 +29,18 @@ const generateMetrics = (region: string, campaignType: string) => {
     display: 0.85
   };
 
+  const timeMultipliers = {
+    today: 1,
+    yesterday: 0.95,
+    week: 1.2,
+    month: 1.5
+  };
+
   // Get multipliers based on selected filters
   const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
   const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers];
-  const totalMult = regionMult * campaignMult;
+  const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
+  const totalMult = regionMult * campaignMult * timeMult;
 
   const clicks = Math.floor(randomInRange(1500 * totalMult, 2200 * totalMult, 0));
   const conversions = randomInRange(120 * totalMult, 190 * totalMult, 2);
@@ -48,15 +56,19 @@ const generateMetrics = (region: string, campaignType: string) => {
   };
 };
 
-export function GoogleAdsMetrics() {
+interface GoogleAdsMetricsProps {
+  timePeriod?: string;
+}
+
+export function GoogleAdsMetrics({ timePeriod = 'today' }: GoogleAdsMetricsProps) {
   const [region, setRegion] = useState<string>("all");
   const [campaignType, setCampaignType] = useState<string>("all");
-  const [metrics, setMetrics] = useState(generateMetrics("all", "all"));
+  const [metrics, setMetrics] = useState(generateMetrics("all", "all", timePeriod));
 
   // Update metrics when filters change
   useEffect(() => {
-    setMetrics(generateMetrics(region, campaignType));
-  }, [region, campaignType]);
+    setMetrics(generateMetrics(region, campaignType, timePeriod));
+  }, [region, campaignType, timePeriod]);
 
   return (
     <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">
