@@ -7,7 +7,7 @@ export async function callToolHouseApi({ endpoint, method = 'GET', data }: {
 }) {
   try {
     // For chat endpoints, we don't need authentication
-    if (endpoint.startsWith('/vapi')) {
+    if (endpoint.startsWith('/v1')) {  // Updated from /vapi to /v1
       const response = await fetch(`https://api.vapi.ai${endpoint}`, {
         method,
         headers: {

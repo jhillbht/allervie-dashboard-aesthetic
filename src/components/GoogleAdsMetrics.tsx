@@ -4,59 +4,81 @@ import { MetricCard } from './metrics/MetricCard';
 import { GoogleAdsFunnel } from './metrics/GoogleAdsFunnel';
 import { GA4EventsSection } from './metrics/GA4EventsSection';
 
-// Helper function to generate random number within a range
 const randomInRange = (min: number, max: number, decimals: number = 0) => {
   const rand = Math.random() * (max - min) + min;
   const power = Math.pow(10, decimals);
   return Math.floor(rand * power) / power;
 };
 
-// Function to generate metrics based on filters
-const generateMetrics = (region: string, campaignType: string) => {
-  // Base multipliers for different regions and campaign types
+const generateMetrics = (region: string, campaignType: string, timePeriod: string = 'today') => {
   const regionMultipliers = {
-    all: 1,
-    northeast: 1.2,
-    midwest: 0.9,
-    south: 1.1,
-    west: 1.3
+    all: 2.5,
+    northeast: 0.8,
+    midwest: 0.6,
+    south: 0.7,
+    west: 0.9
   };
 
   const campaignMultipliers = {
-    all: 1,
-    search: 1.15,
-    performance: 1.25,
-    display: 0.85
+    all: 2.0,
+    search: 0.8,
+    performance: 0.7,
+    display: 0.5
   };
 
-  // Get multipliers based on selected filters
+  // Updated time period multipliers to reflect 30-day scale
+  const timeMultipliers = {
+    today: 1/30, // One day's worth of the monthly total
+    yesterday: 0.95/30, // Slightly less than today
+    week: 7/30, // One week's worth of the monthly total
+    month: 1 // Full monthly data (baseline)
+  };
+
   const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
   const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers];
-  const totalMult = regionMult * campaignMult;
+  const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
+  const totalMult = regionMult * campaignMult * timeMult;
 
-  const clicks = Math.floor(randomInRange(1500 * totalMult, 2200 * totalMult, 0));
-  const conversions = randomInRange(120 * totalMult, 190 * totalMult, 2);
+  // Base metrics calibrated to match the screenshot's 30-day values
+  const baseImpressions = randomInRange(1200000, 1300000, 0); // Around 1.25M impressions
+  const baseCtr = randomInRange(1.8, 1.95, 2); // Around 1.87% CTR
+  const baseClicks = Math.floor((baseImpressions * baseCtr) / 100); // Derived from impressions and CTR
+  const baseCostPerConversion = randomInRange(33, 36, 2); // Around $34.43
+  const baseConversionRate = randomInRange(1.7, 2.0, 2); // Adjusted for more realistic CVR
   
+  // Calculate metrics with time period adjustment
+  const impressions = Math.floor(baseImpressions * totalMult);
+  const clickThruRate = baseCtr * (1 + (regionMult * 0.1));
+  const clicks = Math.floor((impressions * clickThruRate) / 100);
+  const conversionRate = baseConversionRate * (1 + (campaignMult * 0.1));
+  const conversions = Math.floor((clicks * conversionRate) / 100);
+  const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.1));
+  const cost = Math.floor(conversions * costPerConversion);
+
   return {
-    cost: randomInRange(5000 * totalMult, 9000 * totalMult, 2),
+    cost,
     conversions,
     clicks,
-    conversionRate: randomInRange(6 * totalMult, 10 * totalMult, 2),
-    clickThruRate: randomInRange(0.8 * totalMult, 1.6 * totalMult, 2),
-    costPerConversion: randomInRange(35 * totalMult, 55 * totalMult, 2),
-    impressions: Math.floor(clicks * randomInRange(50, 80, 0))
+    conversionRate,
+    clickThruRate,
+    costPerConversion,
+    impressions
   };
 };
 
-export function GoogleAdsMetrics() {
+interface GoogleAdsMetricsProps {
+  timePeriod?: string;
+}
+
+export function GoogleAdsMetrics({ timePeriod = 'today' }: GoogleAdsMetricsProps) {
   const [region, setRegion] = useState<string>("all");
   const [campaignType, setCampaignType] = useState<string>("all");
-  const [metrics, setMetrics] = useState(generateMetrics("all", "all"));
+  const [metrics, setMetrics] = useState(generateMetrics("all", "all", timePeriod));
 
   // Update metrics when filters change
   useEffect(() => {
-    setMetrics(generateMetrics(region, campaignType));
-  }, [region, campaignType]);
+    setMetrics(generateMetrics(region, campaignType, timePeriod));
+  }, [region, campaignType, timePeriod]);
 
   return (
     <div className="bg-gradient-to-br from-card/50 to-secondary/20 backdrop-blur-sm rounded-xl p-6 w-full border border-border/50">

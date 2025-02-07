@@ -109,7 +109,7 @@ export default function Index() {
         </div>
 
         {/* Google Ads Metrics */}
-        <GoogleAdsMetrics />
+        <GoogleAdsMetrics timePeriod={timePeriod} />
 
         {/* Site Metrics Title */}
         <h2 className="text-2xl font-semibold text-left">Site Metrics</h2>
