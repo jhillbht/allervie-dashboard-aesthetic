@@ -2,7 +2,7 @@ name: allervie-dashboard
 region: sgp
 services:
   - name: dashboard
-    instance_size_slug: basic
+    instance_size_slug: basic-xxs
     instance_count: 1
     github:
       repo: jhillbht/allervie-dashboard-aesthetic
@@ -19,8 +19,11 @@ services:
       success_threshold: 1
       failure_threshold: 3
     envs:
+      # Runtime Environment
       - key: NODE_ENV
         value: production
+      
+      # Supabase Configuration
       - key: VITE_SUPABASE_URL
         scope: RUN_TIME
         type: SECRET
@@ -29,3 +32,24 @@ services:
         scope: RUN_TIME
         type: SECRET
         value: ${VITE_SUPABASE_ANON_KEY}
+      
+      # Google OAuth Configuration
+      - key: VITE_GOOGLE_CLIENT_ID
+        scope: RUN_TIME
+        type: SECRET
+        value: ${VITE_GOOGLE_CLIENT_ID}
+      - key: VITE_GOOGLE_CLIENT_SECRET
+        scope: RUN_TIME
+        type: SECRET
+        value: ${VITE_GOOGLE_CLIENT_SECRET}
+      - key: VITE_OAUTH_REDIRECT_URI
+        scope: RUN_TIME
+        value: "https://seal-app-3mp4e.ondigitalocean.app/auth/callback"
+      
+      # Application Configuration
+      - key: VITE_API_URL
+        scope: RUN_TIME
+        value: "https://seal-app-3mp4e.ondigitalocean.app"
+      - key: VITE_ALLOWED_DOMAINS
+        scope: RUN_TIME
+        value: "allervie.com"
