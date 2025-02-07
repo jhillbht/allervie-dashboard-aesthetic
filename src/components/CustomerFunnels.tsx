@@ -68,7 +68,7 @@ export function CustomerFunnels() {
       <h2 className="text-lg font-medium mb-6">Customer Journey Funnels</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {funnelData.map((funnel) => (
-          <Card key={funnel.id} className="p-4 relative">
+          <Card key={funnel.id} className="p-4 relative animate-[scale-in_0.3s_ease-out]">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-lg font-medium">{funnel.name}</h3>
@@ -89,7 +89,7 @@ export function CustomerFunnels() {
                   </div>
                   <div className="h-2 bg-secondary rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-primary transition-all"
+                      className="h-full bg-primary transition-all duration-300 delay-300 animate-[slide-in-right_0.3s_ease-out]"
                       style={{
                         width: `${(step.value / funnel.steps[0].value) * 100}%`,
                       }}
