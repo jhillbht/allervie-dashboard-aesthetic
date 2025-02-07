@@ -1,15 +1,21 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 import "https://deno.land/x/xhr@0.1.0/mod.ts"
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+  'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+  'Access-Control-Max-Age': '86400',
+};
 
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders })
+    return new Response(null, { 
+      headers: corsHeaders,
+      status: 204 
+    })
   }
 
   try {
@@ -28,13 +34,10 @@ serve(async (req) => {
       )
     }
 
-    // Log headers for debugging
-    console.log('Request headers:', Object.fromEntries(req.headers.entries()));
-
     const { endpoint, method = 'GET', data } = await req.json()
 
     // Special handling for VAPI chat endpoint
-    const baseUrl = endpoint.startsWith('/vapi') 
+    const baseUrl = endpoint.startsWith('/v1') 
       ? 'https://api.vapi.ai' 
       : 'https://api.toolhouse.com';
 
