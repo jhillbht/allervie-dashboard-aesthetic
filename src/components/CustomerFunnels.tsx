@@ -67,57 +67,68 @@ export function CustomerFunnels() {
     <div className="bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full">
       <h2 className="text-lg font-medium mb-6">Customer Journey Funnels</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {funnelData.map((funnel) => (
-          <Card key={funnel.id} className="p-4 relative animate-[scale-in_0.3s_ease-out]">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-medium">{funnel.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1">
-                  via {funnel.trafficSource}
-                </p>
-              </div>
-              {funnel.isWinner && (
-                <Crown className="h-6 w-6 text-yellow-500" />
-              )}
-            </div>
-            <div className="space-y-3">
-              {funnel.steps.map((step, index) => (
-                <div key={index} className="space-y-1">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">{step.name}</span>
-                    <span>{step.value.toLocaleString()}</span>
-                  </div>
-                  <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary transition-all duration-300 delay-300 animate-[slide-in-right_0.3s_ease-out]"
-                      style={{
-                        width: `${(step.value / funnel.steps[0].value) * 100}%`,
-                      }}
-                    />
-                  </div>
+        {funnelData.map((funnel) => {
+          // Calculate the maximum value across all steps for relative sizing
+          const maxStepValue = Math.max(...funnel.steps.map(step => step.value));
+          
+          return (
+            <Card key={funnel.id} className="p-4 relative animate-[scale-in_0.3s_ease-out]">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h3 className="text-lg font-medium">{funnel.name}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    via {funnel.trafficSource}
+                  </p>
                 </div>
-              ))}
-            </div>
-            <div className="mt-4 pt-4 border-t space-y-2">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  Conversion Rate
-                </span>
-                <span className="font-medium">
-                  {funnel.conversionRate.toFixed(1)}%
-                </span>
+                {funnel.isWinner && (
+                  <Crown className="h-6 w-6 text-yellow-500" />
+                )}
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-muted-foreground">
-                  Revenue
-                </span>
-                <span className={`font-medium ${funnel.revenue === maxRevenue ? 'text-green-500' : ''}`}>
-                  ${funnel.revenue.toLocaleString()}
-                </span>
+              <div className="space-y-3">
+                {funnel.steps.map((step, index) => {
+                  // Calculate relative width based on the maximum value
+                  const relativeWidth = (step.value / maxStepValue) * 100;
+                  
+                  return (
+                    <div key={index} className="space-y-1">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">{step.name}</span>
+                        <span>{step.value.toLocaleString()}</span>
+                      </div>
+                      <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                        <div
+                          className="h-full transition-all duration-300 delay-300 animate-[slide-in-right_0.3s_ease-out]"
+                          style={{
+                            width: `${relativeWidth}%`,
+                            background: `linear-gradient(90deg, #1A1F2C ${index * 10}%, #6E59A5 ${100 - (index * 10)}%)`,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-            </div>
-          </Card>
-        ))}
+              <div className="mt-4 pt-4 border-t space-y-2">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">
+                    Conversion Rate
+                  </span>
+                  <span className="font-medium">
+                    {funnel.conversionRate.toFixed(1)}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">
+                    Revenue
+                  </span>
+                  <span className={`font-medium ${funnel.revenue === maxRevenue ? 'text-green-500' : ''}`}>
+                    ${funnel.revenue.toLocaleString()}
+                  </span>
+                </div>
+              </div>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );
