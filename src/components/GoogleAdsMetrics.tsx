@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MetricCard } from './metrics/MetricCard';
@@ -52,7 +51,7 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const clicks = Math.floor((impressions * clickThruRate) / 100);
   const conversionRate = Number((baseConversionRate * (1 + (campaignMult * 0.1))).toFixed(2));
   const conversions = Math.floor((clicks * conversionRate) / 100);
-  const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.1));
+  const costPerConversion = Number((baseCostPerConversion * (1 + (regionMult * 0.1))).toFixed(2));
   const cost = Math.floor(conversions * costPerConversion);
 
   return {
@@ -149,7 +148,7 @@ export function GoogleAdsMetrics({ timePeriod = 'today' }: GoogleAdsMetricsProps
           />
           <MetricCard
             label="Cost / Conversion"
-            value={metrics.costPerConversion}
+            value={metrics.costPerConversion.toFixed(2)}
             change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             prefix="$"
           />
