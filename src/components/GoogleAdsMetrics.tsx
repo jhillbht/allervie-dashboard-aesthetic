@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { MetricCard } from './metrics/MetricCard';
 import { GoogleAdsFunnel } from './metrics/GoogleAdsFunnel';
 import { GA4EventsSection } from './metrics/GA4EventsSection';
+import { campaignsByRegion } from './chart/data-generation';
 
 const randomInRange = (min: number, max: number, decimals: number = 0) => {
   const rand = Math.random() * (max - min) + min;
@@ -26,12 +28,11 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
     display: 0.5
   };
 
-  // Updated time period multipliers to reflect 30-day scale
   const timeMultipliers = {
-    today: 1/30, // One day's worth of the monthly total
-    yesterday: 0.95/30, // Slightly less than today
-    week: 7/30, // One week's worth of the monthly total
-    month: 1 // Full monthly data (baseline)
+    today: 1/30,
+    yesterday: 0.95/30,
+    week: 7/30,
+    month: 1
   };
 
   const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
@@ -39,14 +40,12 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
   const totalMult = regionMult * campaignMult * timeMult;
 
-  // Base metrics calibrated to match the screenshot's 30-day values
-  const baseImpressions = randomInRange(1200000, 1300000, 0); // Around 1.25M impressions
-  const baseCtr = randomInRange(1.8, 1.95, 2); // Around 1.87% CTR
-  const baseClicks = Math.floor((baseImpressions * baseCtr) / 100); // Derived from impressions and CTR
-  const baseCostPerConversion = randomInRange(33, 36, 2); // Around $34.43
-  const baseConversionRate = randomInRange(1.7, 2.0, 2); // Adjusted for more realistic CVR
+  const baseImpressions = randomInRange(1200000, 1300000, 0);
+  const baseCtr = randomInRange(1.8, 1.95, 2);
+  const baseClicks = Math.floor((baseImpressions * baseCtr) / 100);
+  const baseCostPerConversion = randomInRange(33, 36, 2);
+  const baseConversionRate = randomInRange(1.7, 2.0, 2);
   
-  // Calculate metrics with time period adjustment
   const impressions = Math.floor(baseImpressions * totalMult);
   const clickThruRate = baseCtr * (1 + (regionMult * 0.1));
   const clicks = Math.floor((impressions * clickThruRate) / 100);
@@ -75,7 +74,6 @@ export function GoogleAdsMetrics({ timePeriod = 'today' }: GoogleAdsMetricsProps
   const [campaignType, setCampaignType] = useState<string>("all");
   const [metrics, setMetrics] = useState(generateMetrics("all", "all", timePeriod));
 
-  // Update metrics when filters change
   useEffect(() => {
     setMetrics(generateMetrics(region, campaignType, timePeriod));
   }, [region, campaignType, timePeriod]);
