@@ -49,10 +49,12 @@ export const getTimePoints = (period: string) => {
       return ['9 AM', '11 AM', '1 PM', '3 PM', '5 PM', '7 PM'];
     case 'yesterday':
       return ['10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'];
-    case 'week':
+    case 'last-week':
       return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    case 'month':
+    case 'last-month':
       return ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    case 'last-quarter':
+      return ['Month 1', 'Month 2', 'Month 3'];
     default:
       return ['10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'];
   }
@@ -83,8 +85,9 @@ export const generateChartData = (region: string, campaignType: string, timePeri
   const periodMultipliers = {
     today: 1,
     yesterday: 0.95,
-    week: 1.2,
-    month: 1.5
+    'last-week': 1.2,
+    'last-month': 1.5,
+    'last-quarter': 2.0
   };
 
   const regionMult = regionMultipliers[region as keyof typeof regionMultipliers] || 1;
