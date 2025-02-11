@@ -31,13 +31,14 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const timeMultipliers = {
     today: 1/30,
     yesterday: 0.95/30,
-    week: 7/30,
-    month: 1
+    'last-week': 7/30,
+    'last-month': 1,
+    'last-quarter': 3
   };
 
-  const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
-  const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers];
-  const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
+  const regionMult = regionMultipliers[region as keyof typeof regionMultipliers] || 1;
+  const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers] || 1;
+  const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers] || 1;
   const totalMult = regionMult * campaignMult * timeMult;
 
   const baseImpressions = randomInRange(1200000, 1300000, 0);
@@ -55,13 +56,13 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const cost = Math.floor(conversions * costPerConversion);
 
   return {
-    cost,
-    conversions,
-    clicks,
-    conversionRate,
-    clickThruRate,
-    costPerConversion,
-    impressions
+    cost: Math.max(0, cost),
+    conversions: Math.max(0, conversions),
+    clicks: Math.max(0, clicks),
+    conversionRate: Math.max(0, conversionRate),
+    clickThruRate: Math.max(0, clickThruRate),
+    costPerConversion: Math.max(0, costPerConversion),
+    impressions: Math.max(0, impressions)
   };
 };
 
