@@ -48,9 +48,9 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
   const baseConversionRate = randomInRange(1.7, 2.0, 2);
   
   const impressions = Math.floor(baseImpressions * totalMult);
-  const clickThruRate = baseCtr * (1 + (regionMult * 0.1));
+  const clickThruRate = Number((baseCtr * (1 + (regionMult * 0.1))).toFixed(2));
   const clicks = Math.floor((impressions * clickThruRate) / 100);
-  const conversionRate = baseConversionRate * (1 + (campaignMult * 0.1));
+  const conversionRate = Number((baseConversionRate * (1 + (campaignMult * 0.1))).toFixed(2));
   const conversions = Math.floor((clicks * conversionRate) / 100);
   const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.1));
   const cost = Math.floor(conversions * costPerConversion);
@@ -137,13 +137,13 @@ export function GoogleAdsMetrics({ timePeriod = 'today' }: GoogleAdsMetricsProps
           />
           <MetricCard
             label="Conversion Rate"
-            value={metrics.conversionRate}
+            value={metrics.conversionRate.toFixed(2)}
             change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             suffix="%"
           />
           <MetricCard
             label="Click-Thru Rate"
-            value={metrics.clickThruRate}
+            value={metrics.clickThruRate.toFixed(2)}
             change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             suffix="%"
           />
