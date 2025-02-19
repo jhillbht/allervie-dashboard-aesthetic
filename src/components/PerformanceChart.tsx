@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -38,6 +39,13 @@ export function PerformanceChart({
     return () => window.removeEventListener('orientationchange', handleOrientationChange);
   }, []);
 
+  const formatYAxis = (value: number): string => {
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(1)}k`;
+    }
+    return value.toString();
+  };
+
   return (
     <div className={`bg-card/50 backdrop-blur-sm rounded-lg p-6 w-full ${
       isLandscape ? 'fixed inset-0 z-50' : ''
@@ -71,6 +79,18 @@ export function PerformanceChart({
               }}
               width={isLandscape ? 60 : 50}
               tickMargin={8}
+              tickFormatter={formatYAxis}
+              label={{ 
+                value: 'Conversions', 
+                angle: -90, 
+                position: 'insideLeft',
+                style: { 
+                  textAnchor: 'middle',
+                  fill: CHART_COLORS.gray,
+                  fontSize: isLandscape ? 14 : 12
+                },
+                dx: -10
+              }}
             />
             <Tooltip
               contentStyle={{
@@ -80,10 +100,12 @@ export function PerformanceChart({
                 fontSize: isLandscape ? "14px" : "12px",
                 padding: "8px 12px"
               }}
+              formatter={(value: number) => [`${value.toLocaleString()} conversions`, 'Conversions']}
             />
             <Line
               type="monotone"
               dataKey="current"
+              name="Current Period"
               stroke={CHART_COLORS.blue}
               strokeWidth={2}
               dot={false}
@@ -91,6 +113,7 @@ export function PerformanceChart({
             <Line
               type="monotone"
               dataKey="previous"
+              name="Previous Period"
               stroke={CHART_COLORS.gray}
               strokeWidth={2}
               dot={false}

@@ -20,10 +20,12 @@ const getTimeLabels = (period: string) => {
       return ['11 AM', '1 PM', '3 PM', '5 PM', '7 PM', '9 PM'];
     case 'yesterday':
       return ['10 AM', '12 PM', '2 PM', '4 PM', '6 PM', '8 PM'];
-    case 'week':
+    case 'last-week':
       return ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    case 'month':
+    case 'last-month':
       return ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
+    case 'last-quarter':
+      return ['Q1', 'Q2', 'Q3', 'Q4'];
     default:
       return ['11 AM', '1 PM', '3 PM', '5 PM', '7 PM', '9 PM'];
   }
@@ -93,8 +95,9 @@ export default function Index() {
               <SelectContent>
                 <SelectItem value="today">Today</SelectItem>
                 <SelectItem value="yesterday">Yesterday</SelectItem>
-                <SelectItem value="week">Last 7 days</SelectItem>
-                <SelectItem value="month">Last 30 days</SelectItem>
+                <SelectItem value="last-week">Last Week</SelectItem>
+                <SelectItem value="last-month">Last Month</SelectItem>
+                <SelectItem value="last-quarter">Last Quarter</SelectItem>
               </SelectContent>
             </Select>
             <Button

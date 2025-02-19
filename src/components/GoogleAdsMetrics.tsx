@@ -3,6 +3,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { MetricCard } from './metrics/MetricCard';
 import { GoogleAdsFunnel } from './metrics/GoogleAdsFunnel';
 import { GA4EventsSection } from './metrics/GA4EventsSection';
+import { campaignsByRegion } from './chart/data-generation';
 
 const randomInRange = (min: number, max: number, decimals: number = 0) => {
   const rand = Math.random() * (max - min) + min;
@@ -26,43 +27,41 @@ const generateMetrics = (region: string, campaignType: string, timePeriod: strin
     display: 0.5
   };
 
-  // Updated time period multipliers to reflect 30-day scale
   const timeMultipliers = {
-    today: 1/30, // One day's worth of the monthly total
-    yesterday: 0.95/30, // Slightly less than today
-    week: 7/30, // One week's worth of the monthly total
-    month: 1 // Full monthly data (baseline)
+    today: 1/30,
+    yesterday: 0.95/30,
+    'last-week': 7/30,
+    'last-month': 1,
+    'last-quarter': 3
   };
 
-  const regionMult = regionMultipliers[region as keyof typeof regionMultipliers];
-  const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers];
-  const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers];
+  const regionMult = regionMultipliers[region as keyof typeof regionMultipliers] || 1;
+  const campaignMult = campaignMultipliers[campaignType as keyof typeof campaignMultipliers] || 1;
+  const timeMult = timeMultipliers[timePeriod as keyof typeof timeMultipliers] || 1;
   const totalMult = regionMult * campaignMult * timeMult;
 
-  // Base metrics calibrated to match the screenshot's 30-day values
-  const baseImpressions = randomInRange(1200000, 1300000, 0); // Around 1.25M impressions
-  const baseCtr = randomInRange(1.8, 1.95, 2); // Around 1.87% CTR
-  const baseClicks = Math.floor((baseImpressions * baseCtr) / 100); // Derived from impressions and CTR
-  const baseCostPerConversion = randomInRange(33, 36, 2); // Around $34.43
-  const baseConversionRate = randomInRange(1.7, 2.0, 2); // Adjusted for more realistic CVR
+  const baseImpressions = randomInRange(1200000, 1300000, 0);
+  const baseCtr = randomInRange(1.8, 1.95, 2);
+  const baseClicks = Math.floor((baseImpressions * baseCtr) / 100);
+  const baseCostPerConversion = randomInRange(33, 36, 2);
+  const baseConversionRate = randomInRange(1.7, 2.0, 2);
   
-  // Calculate metrics with time period adjustment
   const impressions = Math.floor(baseImpressions * totalMult);
-  const clickThruRate = baseCtr * (1 + (regionMult * 0.1));
+  const clickThruRate = Number((baseCtr * (1 + (regionMult * 0.1))).toFixed(2));
   const clicks = Math.floor((impressions * clickThruRate) / 100);
-  const conversionRate = baseConversionRate * (1 + (campaignMult * 0.1));
+  const conversionRate = Number((baseConversionRate * (1 + (campaignMult * 0.1))).toFixed(2));
   const conversions = Math.floor((clicks * conversionRate) / 100);
-  const costPerConversion = baseCostPerConversion * (1 + (regionMult * 0.1));
+  const costPerConversion = Number((baseCostPerConversion * (1 + (regionMult * 0.1))).toFixed(2));
   const cost = Math.floor(conversions * costPerConversion);
 
   return {
-    cost,
-    conversions,
-    clicks,
-    conversionRate,
-    clickThruRate,
-    costPerConversion,
-    impressions
+    cost: Math.max(0, cost),
+    conversions: Math.max(0, conversions),
+    clicks: Math.max(0, clicks),
+    conversionRate: Math.max(0, conversionRate),
+    clickThruRate: Math.max(0, clickThruRate),
+    costPerConversion: Math.max(0, costPerConversion),
+    impressions: Math.max(0, impressions)
   };
 };
 
@@ -75,7 +74,6 @@ export function GoogleAdsMetrics({ timePeriod = 'today' }: GoogleAdsMetricsProps
   const [campaignType, setCampaignType] = useState<string>("all");
   const [metrics, setMetrics] = useState(generateMetrics("all", "all", timePeriod));
 
-  // Update metrics when filters change
   useEffect(() => {
     setMetrics(generateMetrics(region, campaignType, timePeriod));
   }, [region, campaignType, timePeriod]);
@@ -138,19 +136,19 @@ export function GoogleAdsMetrics({ timePeriod = 'today' }: GoogleAdsMetricsProps
           />
           <MetricCard
             label="Conversion Rate"
-            value={metrics.conversionRate}
+            value={metrics.conversionRate.toFixed(2)}
             change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             suffix="%"
           />
           <MetricCard
             label="Click-Thru Rate"
-            value={metrics.clickThruRate}
+            value={metrics.clickThruRate.toFixed(2)}
             change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             suffix="%"
           />
           <MetricCard
             label="Cost / Conversion"
-            value={metrics.costPerConversion}
+            value={metrics.costPerConversion.toFixed(2)}
             change={{ value: randomInRange(10, 60, 1), type: Math.random() > 0.5 ? 'increase' : 'decrease' }}
             prefix="$"
           />
