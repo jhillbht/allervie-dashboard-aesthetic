@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GA4 Account Selector</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen py-8">
+        <div class="max-w-4xl mx-auto px-4">
+            <h1 class="text-2xl font-bold mb-6">Select Google Analytics Account</h1>
+            
+            <div id="loading" class="animate-pulse space-y-4">
+                <div class="h-4 bg-blue-200 rounded w-3/4"></div>
+                <div class="h-4 bg-blue-200 rounded w-1/2"></div>
+            </div>
+
+            <div id="error-message" class="hidden bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4"></div>
+            
+            <div id="accounts-container" class="space-y-6"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and display accounts
+        fetch('/api/accounts')
+            .then(response => response.json())
+            .then(accounts => {
+                document.getElementById('loading').style.display = 'none';
+                const container = document.getElementById('accounts-container');
+                
+                if (accounts.length === 0) {
+                    document.getElementById('error-message').textContent = 'No Google Analytics accounts found';
+                    document.getElementById('error-message').classList.remove('hidden');
+                    return;
+                }
+
+                accounts.forEach(account => {
+                    const accountDiv = document.createElement('div');
+                    accountDiv.className = 'bg-white rounded-lg shadow-sm overflow-hidden mb-6';
+                    
+                    accountDiv.innerHTML = `
+                        <div class="bg-gray-50 px-4 py-3 border-b">
+                            <h2 class="text-lg font-medium">${account.name}</h2>
+                        </div>
+                        
+                        <div class="p-4 space-y-4">
+                            ${account.properties.map(property => `
+                                <div class="border rounded-lg p-4 hover:shadow-md transition-shadow">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <div>
+                                            <h3 class="font-medium">${property.name}</h3>
+                                            <p class="text-sm text-gray-500">Property ID: ${property.id}</p>
+                                        </div>
+                                        <button
+                                            onclick="window.location.href='${property.id}'"
+                                            class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm font-medium"
+                                        >
+                                            Select Property
+                                        </button>
+                                    </div>
+                                    
+                                    <div class="text-sm text-gray-600 space-y-1">
+                                        <div>Website: ${property.websiteUrl}</div>
+                                        <div>Timezone: ${property.timezone}</div>
+                                        <div>Currency: ${property.currency}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    
+                    container.appendChild(accountDiv);
+                });
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error-message').textContent = 'Error loading accounts. Please try again.';
+                document.getElementById('error-message').classList.remove('hidden');
+                console.error('Error:', error);
+            });
+    </script>
+</body>
+</html>

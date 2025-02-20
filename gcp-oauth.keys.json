@@ -1,0 +1,16 @@
+{
+  "web": {
+    "client_id": "22083613754-d1omeg2958vrsndpqg2v1jp0ncm7sr23.apps.googleusercontent.com",
+    "project_id": "allervie-dashboard",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": [
+      "http://localhost:49152",
+      "http://localhost:49153",
+      "http://localhost:49154",
+      "http://localhost:49155"
+    ]
+  }
+}

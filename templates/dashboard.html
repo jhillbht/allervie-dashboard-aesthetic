@@ -1,0 +1,19 @@
+<div class="metric-grid">
+    {% for metric, data in metrics_data.items() %}
+    <div class="metric-tile">
+        <div class="metric-header">
+            <i class="{{ data.config.icon }}"></i>
+            <h3>{{ data.config.title }}</h3>
+        </div>
+        <div class="metric-value">
+            {{ data.current|round(2) }}{% if data.config.type == 'percentage' %}%{% endif %}
+        </div>
+        <div class="metric-trend {% if data.trend > 0 %}positive{% else %}negative{% endif %}">
+            {{ data.trend|round(2) }}%
+        </div>
+        <div class="metric-description">
+            {{ data.config.description }}
+        </div>
+    </div>
+    {% endfor %}
+</div> 

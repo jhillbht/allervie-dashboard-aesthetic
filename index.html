@@ -1,13 +1,60 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Allervie Dashboard</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+<html>
+<head>
+    <title>Chat Interface</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="auth-container">
+        <button id="login-button" onclick="handleLogin()" style="display: none;">Login with Google</button>
+    </div>
+
+    <div class="chat-container" style="display: none;">
+        <div class="chat-messages"></div>
+        <div class="chat-input-container">
+            <input type="text" id="chat-input" placeholder="Type your message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script src="chat.js"></script>
+    <script>
+        // Check if we're returning from auth
+        window.onload = function() {
+            if (handleAuthRedirect()) {
+                // Show chat interface
+                document.querySelector('.chat-container').style.display = 'flex';
+            } else if (!localStorage.getItem('auth_token')) {
+                // Show login button
+                document.getElementById('login-button').style.display = 'block';
+            } else {
+                // Already authenticated
+                document.querySelector('.chat-container').style.display = 'flex';
+                updateChatAuthorization(localStorage.getItem('auth_token'));
+            }
+        }
+
+        function handleLogin() {
+            window.location.href = initializeAuth();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                handleChat(message);
+                input.value = '';
+            }
+        }
+
+        // Add enter key support
+        document.getElementById('chat-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html> 

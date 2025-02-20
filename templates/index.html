@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Analytics Selector</title>
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div class="p-4 max-w-4xl mx-auto">
+            <h1 class="text-2xl font-bold mb-6">Google Analytics Account Selector</h1>
+            <div id="accounts-container"></div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch and display accounts
+        fetch('/api/accounts')
+            .then(response => response.json())
+            .then(accounts => {
+                const container = document.getElementById('accounts-container');
+                
+                accounts.forEach(account => {
+                    const accountDiv = document.createElement('div');
+                    accountDiv.className = 'border rounded-lg p-4 mb-4';
+                    
+                    // Account header
+                    const accountHeader = document.createElement('div');
+                    accountHeader.className = 'flex items-center cursor-pointer';
+                    accountHeader.innerHTML = `
+                        <svg class="w-5 h-5 mr-2 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                        <span class="font-medium">${account.name}</span>
+                    `;
+                    
+                    // Properties container
+                    const propertiesDiv = document.createElement('div');
+                    propertiesDiv.className = 'mt-4 ml-6 space-y-3';
+                    
+                    account.properties.forEach(property => {
+                        const propertyDiv = document.createElement('div');
+                        propertyDiv.className = 'border rounded p-3 cursor-pointer hover:bg-gray-50';
+                        propertyDiv.innerHTML = `
+                            <div class="flex items-center">
+                                <svg class="w-4 h-4 mr-2 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                    <rect x="2" y="3" width="20" height="18" rx="2"></rect>
+                                </svg>
+                                <span class="font-medium">${property.name}</span>
+                            </div>
+                            <div class="mt-2 text-sm text-gray-600 space-y-1">
+                                <div>Property ID: ${property.id}</div>
+                                <div>Website: ${property.websiteUrl}</div>
+                                <div>Timezone: ${property.timezone}</div>
+                                <div>Currency: ${property.currency}</div>
+                            </div>
+                        `;
+                        propertiesDiv.appendChild(propertyDiv);
+                    });
+                    
+                    accountDiv.appendChild(accountHeader);
+                    accountDiv.appendChild(propertiesDiv);
+                    container.appendChild(accountDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                const container = document.getElementById('accounts-container');
+                container.innerHTML = `
+                    <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                        Error loading accounts. Please try again.
+                    </div>
+                `;
+            });
+    </script>
+</body>
+</html>

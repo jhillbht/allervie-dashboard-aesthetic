@@ -1,69 +1,47 @@
-# Welcome to your Lovable project
+# Allervie Analytics OAuth Test
 
-## Project info
+This project helps test the OAuth2.0 connection for Allervie Analytics.
 
-**URL**: https://lovable.dev/projects/d5f4f8e1-27b2-4a8f-a006-9b88fb151059
+## Prerequisites
 
-## How can I edit this code?
-
-There are several ways of editing your application.
-
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/d5f4f8e1-27b2-4a8f-a006-9b88fb151059) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Python 3.7+
+2. Required packages:
+```bash
+pip install google-auth google-auth-oauthlib google-api-python-client pandas
 ```
 
-**Edit a file directly in GitHub**
+3. Google Analytics 4 Property ID (default: 399455767)
+4. OAuth2.0 client secret JSON file from Google Cloud Console
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Setup
 
-**Use GitHub Codespaces**
+1. Place your `client_secret.json` file in this directory
+   - If it's elsewhere, you'll be prompted for its location
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+2. Run the test script:
+```bash
+python test_oauth.py
+```
 
-## What technologies are used for this project?
+3. Follow the OAuth flow in your browser when prompted
 
-This project is built with .
+## What the Test Does
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Initializes OAuth2.0 authentication
+2. Tests connection to GA4
+3. Fetches some test data (last 7 days of active users)
 
-## How can I deploy this project?
+## Files
 
-Simply open [Lovable](https://lovable.dev/projects/d5f4f8e1-27b2-4a8f-a006-9b88fb151059) and click on Share -> Publish.
+- `test_oauth.py`: Main test script
+- `client_secret.json`: Your OAuth credentials (you need to add this)
+- `token.json`: Generated after successful authentication
 
-## I want to use a custom domain - is that possible?
+## Troubleshooting
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+If you encounter errors:
+
+1. Make sure your `client_secret.json` is in the correct format
+2. Verify your Google Cloud Project has the Analytics API enabled
+3. Check that your OAuth2.0 credentials have the correct redirect URI
+4. Delete `token.json` and try again if you're having authentication issues
